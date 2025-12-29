@@ -1,0 +1,49 @@
+<!-- {{ results | json }} -->
+<div class="league-name" *ngIf="standings">
+  <h1>{{standings.leagueName}}</h1>
+</div>
+
+<table class="standings-table">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Team</th>
+      <th>Manager</th>
+      <th>GW</th>
+      <th>Points</th>
+      <th>Delta</th>
+      <th>Points on Bench</th>
+      <th>Squad Value</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let player of results">
+      <td>{{ player.rank }}</td>
+      <td>{{ player.entry_name}}</td>
+      <td>{{ player.player_name }}</td>
+      <td>{{ player.event_total }}</td>
+      <td>{{ player.total }}</td>
+      <td>{{ player.points_behind_leader*-1 }}</td>
+      <td>{{ player.squad_by_gw[18].points_on_bench }}</td>
+      <td>{{ player.squad_by_gw[18].value/10 }}</td>
+    </tr>
+  </tbody>
+
+  <tfoot>
+    <tr class="table-footer">
+      <td colspan="100%">
+        <span>Average Points: {{ avgPts | number:'1.0-2' }}</span>
+        <span class="separator">|</span>
+        <span>GW Average: {{ gwAvg | number:'1.0-2' }}</span>
+        <span class="separator">|</span>
+        <span>Average Value: {{ avgVal | number:'1.0-2' }}</span>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+
+<div class="chart-wrapper">
+  <canvas #leagueChart></canvas>
+</div>

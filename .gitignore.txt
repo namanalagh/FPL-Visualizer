@@ -1,0 +1,55 @@
+##################################
+# General
+##################################
+.env
+.env.*
+*.log
+
+##################################
+# Node / Angular
+##################################
+node_modules/
+dist/
+.angular/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+##################################
+# Angular cache
+##################################
+.cache/
+.tmp/
+
+##################################
+# .NET / ASP.NET
+##################################
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+##################################
+# ASP.NET Core
+##################################
+appsettings.Development.json
+appsettings.Local.json
+
+##################################
+# IDEs
+##################################
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+.idea/
+*.iml
+
+##################################
+# OS
+##################################
+.DS_Store
+Thumbs.db

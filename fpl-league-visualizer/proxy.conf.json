@@ -1,0 +1,7 @@
+{
+  "/fpl": {
+    "target": "https://fantasy.premierleague.com",
+    "secure": true,
+    "changeOrigin": true
+  }
+}

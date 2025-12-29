@@ -1,0 +1,66 @@
+body {
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: black;
+  margin: 0;
+}
+h1, th, tfoot {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+:root {
+  --pl-purple: #37003c;
+  --pl-pink: #ff2882;
+  --pl-green: #00ff87;
+}
+.standings-table thead {
+  background: var(--pl-purple);
+  color: white;
+}
+.standings-table td {
+  padding: 12px 16px;
+  background-color: #00ff87;
+  overflow: hidden;
+  width: 10%;
+  border-collapse: collapse;
+  text-align: left;
+  table-layout: auto;
+  text-overflow: ellipsis; /* prevent overflow text from breaking layout */
+  /* white-space: nowrap; */
+}
+.standings-table tbody tr td {
+  color: #000000; /* black font */
+}
+.table-footer {
+  background: var(--pl-purple);
+  color: white;
+  width: 100%;
+  text-align: right;
+  font-weight: 600;
+  padding: 10px;
+}
+.table-footer span {
+  margin-left: 12px;
+}
+.table-footer td{
+  background: var(--pl-purple);
+}
+.separator {
+  opacity: 0.5;
+}
+.league-name{
+  display: flex;
+  padding-left: 20px;
+  background: var(--pl-purple);
+  color: white;
+  width: 100%;
+}
+.chart-wrapper {
+  width: 100vw;          /* full viewport width */
+  margin-left: calc(-50vw + 50%);
+  height: 700px;         /* adjust as needed */
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
