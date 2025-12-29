@@ -33,7 +33,7 @@ export class StandingsService {
         catchError(() => {
           const squad = new Squad();
           squad.gw = gw; // set the current gameweek
-          squad.value = 100;
+          squad.value = 1000;
           return of(squad);
         })
       );
@@ -47,7 +47,7 @@ export class StandingsService {
     squad.total_points = dto.entry_history.total_points ?? 0;
     squad.rank = dto.entry_history.rank ?? 0;
     squad.bank = dto.entry_history.bank ?? 0;
-    squad.value = dto.entry_history.value ?? 100;
+    squad.value = dto.entry_history.value ?? 1000;
     squad.points_on_bench = dto.entry_history.points_on_bench ?? 0;
 
     squad.squad_players = dto.picks.map(p => ({

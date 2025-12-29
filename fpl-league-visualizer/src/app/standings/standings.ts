@@ -3,12 +3,13 @@ import { StandingsService } from '../standings-service';
 import { StandingEntryDto, StandingsDto } from './standingsDTO';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
-import { StandingsVM, Team } from './standingsVM';
+import { Squad, StandingsVM, Team } from './standingsVM';
 import { Chart } from 'chart.js/auto';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-standings',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   standalone: true,
   templateUrl: './standings.html',
   styleUrl: './standings.css',
@@ -16,12 +17,15 @@ import { Chart } from 'chart.js/auto';
 export class Standings {
   standings!: StandingsVM;
   results: Team[] = [];
-  
+  selectedStat: 'gwPoints' | 'totalPoints' | 'squadValue' | 'pointsOnBench' = 'totalPoints';
+  showStatPopup = false;
+
   @ViewChild('leagueChart') leagueChart!: ElementRef<HTMLCanvasElement>;
   chart!: Chart;
   totalPts: number = 0;
   totalValue: number = 0;
   gwAvg: number = 0;
+
   get avgPts(): number {
     return this.totalPts/this.results.length
   }
@@ -44,10 +48,12 @@ export class Standings {
       label: team.entry_name,
       data: team.squad_by_gw
         .slice(1, uptoGw + 1)
-        .map(s => s.total_points),
+        .map(s => this.getStatValue(s)),
       tension: 0.25,
       pointRadius: 0
     }));
+
+    console.log(datasets)
 
     this.chart?.destroy();
 
@@ -61,6 +67,22 @@ export class Standings {
         responsive: true,
         plugins: {
           legend: { display: true }
+        },
+        scales: {
+           x: {
+            type: 'category',
+            grid: {
+              display: false,
+              color: 'rgba(255, 255, 255, 0.2)',
+            }
+          },
+          y: {
+            type: 'linear',
+            grid: {
+              display: true,
+              color: 'rgba(255, 255, 255, 0.2)',
+            }
+          }
         }
       }
     });
@@ -77,6 +99,21 @@ export class Standings {
     this.gwAvg /= this.results.length;
     this.renderChart(18);
   }
+
+  private getStatValue(squad: Squad): number {
+  switch (this.selectedStat) {
+    case 'gwPoints':
+      return squad.points;
+    case 'totalPoints':
+      return squad.total_points;
+    case 'squadValue':
+      return squad.value/10;
+    case 'pointsOnBench':
+      return squad.points_on_bench;
+    default:
+      return 0;
+  }
+}
   
   ngOnInit() {
     this.standingsService.getLeagueStandingsWithPicks(2246597).subscribe(vm => {
@@ -88,3 +125,8 @@ export class Standings {
     });
   }
 }
+
+export type StatType =
+  | 'gwPoints'
+  | 'totalPoints'
+  | 'squadValue';

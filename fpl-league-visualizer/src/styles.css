@@ -64,3 +64,36 @@ canvas {
   width: 100% !important;
   height: 100% !important;
 }
+.stat-label {
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.stat-label select {
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  appearance: none;       /* Remove default arrow styling */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding: 6px 12px;
+  font-size: 18px;
+  font-weight: 600;
+
+  /* border: 2px solid #37003c;   Dark PL purple border */
+  /* border-radius: 4px;          Slightly rounded corners */
+  background-color: var(--pl-purple);   /* PL purple background */
+  color: white;
+
+  cursor: pointer;
+}
+
+.stat-label select option {
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: white;
+  color: black;
+}

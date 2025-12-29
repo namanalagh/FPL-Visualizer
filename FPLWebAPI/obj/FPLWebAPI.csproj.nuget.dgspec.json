@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\naman\\source\\repos\\FPLWebAPI\\FPLWebAPI.csproj": {}
+    "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\FPLWebAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\naman\\source\\repos\\FPLWebAPI\\FPLWebAPI.csproj": {
+    "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\FPLWebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\naman\\source\\repos\\FPLWebAPI\\FPLWebAPI.csproj",
+        "projectUniqueName": "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\FPLWebAPI.csproj",
         "projectName": "FPLWebAPI",
-        "projectPath": "C:\\Users\\naman\\source\\repos\\FPLWebAPI\\FPLWebAPI.csproj",
+        "projectPath": "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\FPLWebAPI.csproj",
         "packagesPath": "C:\\Users\\naman\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\naman\\source\\repos\\FPLWebAPI\\obj\\",
+        "outputPath": "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

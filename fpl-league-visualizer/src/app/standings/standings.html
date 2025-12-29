@@ -43,7 +43,20 @@
   </tfoot>
 </table>
 
+<label class="stat-label">
+  Stat:
+  <select
+    [(ngModel)]="selectedStat"
+    (change)="renderChart(18)"
+  >
+    <option value="gwPoints">GW Points</option>
+    <option value="totalPoints">Total Points</option>
+    <option value="squadValue">Squad Value</option>
+    <option value="pointsOnBench">Points on Bench</option>
+  </select>
+</label>
 
 <div class="chart-wrapper">
   <canvas #leagueChart></canvas>
 </div>
+

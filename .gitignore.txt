@@ -45,6 +45,9 @@ appsettings.Local.json
 !.vscode/extensions.json
 !.vscode/settings.json
 
+# Visual Studio
+.vs/
+
 .idea/
 *.iml
 
