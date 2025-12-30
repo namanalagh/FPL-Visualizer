@@ -11,7 +11,7 @@ export interface LeagueDTO {
 }
 
 export interface StandingEntryDto {
-  entry: number
+  entry: number;
   rank: number;
   entry_name: string;
   player_name: string;

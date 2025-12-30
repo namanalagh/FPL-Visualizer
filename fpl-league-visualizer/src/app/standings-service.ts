@@ -87,20 +87,24 @@ export class StandingsService {
 
   getLeagueStandingsWithPicks(leagueId: number) {
   return this.getLeagueStandings(leagueId).pipe(
-      switchMap(vm => this.attachTeamPicks(vm, 18))
+      switchMap(vm => this.attachTeamPicks(vm, 18).pipe(
+        map(() =>  {
+          this.calculateLeagueRanks(vm);
+          return vm;
+        })
+      ))
     );
   }
 
   private attachTeamPicks(vm: StandingsVM, maxGw: number) {
     const teamRequests = vm.teams.map(team => {
-
       const gwRequests = Array.from(
         { length: maxGw },
         (_, i) => i + 1
       ).map(gw =>
         this.getTeamPicks(team.id, gw).pipe(
           map(picks => {
-            team.squad_by_gw[gw] = picks; // 1-indexed ✅
+            team.squad_by_gw[gw] = picks; // 1-indexed 
             return true;
           })
         )
@@ -113,4 +117,32 @@ export class StandingsService {
       map(() => vm)
     );
   }
+
+  private calculateLeagueRanks(vm: StandingsVM) {
+      const maxGw = 18;
+
+      for (let gw = 1; gw <= maxGw; gw++) {
+          // collect scores for this GW
+          const scores = vm.teams.map(team => ({
+          team,
+          total: team.squad_by_gw[gw]?.total_points ?? 0
+          }));
+
+          // sort descending
+          scores.sort((a, b) => b.total - a.total);
+
+          // assign ranks (handles ties)
+          let rank = 1;
+          let prevTotal: number | null = null;
+
+          scores.forEach((item, index) => {
+          if (prevTotal !== null && item.total < prevTotal) {
+              rank = index + 1;
+          }
+
+          item.team.squad_by_gw[gw].rank = rank;
+          prevTotal = item.total;
+          });
+      }
   }
+}

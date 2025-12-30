@@ -17,7 +17,7 @@ import { FormsModule } from '@angular/forms';
 export class Standings {
   standings!: StandingsVM;
   results: Team[] = [];
-  selectedStat: 'gwPoints' | 'totalPoints' | 'squadValue' | 'pointsOnBench' = 'totalPoints';
+  selectedStat: 'gwPoints' | 'totalPoints' | 'squadValue' | 'pointsOnBench' | 'rank' = 'totalPoints';
   showStatPopup = false;
 
   @ViewChild('leagueChart') leagueChart!: ElementRef<HTMLCanvasElement>;
@@ -81,6 +81,11 @@ export class Standings {
           },
           y: {
             type: 'linear',
+            reverse: this.selectedStat == 'rank' ? true : false,
+            ticks: {
+              // callback: (value) => Number.isInteger(value) ? value : ''
+              precision: 0  
+            },
             grid: {
               display: true,
               color: 'rgba(255, 255, 255, 0.2)',
@@ -114,6 +119,8 @@ export class Standings {
         return squad.value/10;
       case 'pointsOnBench':
         return squad.points_on_bench;
+      case 'rank':
+        return squad.rank;
       default:
         return 0;
     }
@@ -139,16 +146,12 @@ export class Standings {
       this.cdr.detectChanges();  
       console.log(vm);
     });
+
+    
   }
   
   ngOnInit() {
   }
 }
-
-export type StatType =
-  | 'gwPoints'
-  | 'totalPoints'
-  | 'squadValue';
-
 
   // OUR LEAGUE: 2246597
