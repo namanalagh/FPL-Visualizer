@@ -37,7 +37,7 @@
       <td>{{ player.total }}</td>
       <td>{{ player.points_behind_leader*-1 }}</td>
       <td>{{ player.squad_by_gw[18].points_on_bench }}</td>
-      <td>{{ player.squad_by_gw[18].value/10 }}</td>
+      <td>{{ player.squad_by_gw[18].value/10 }} M</td>
     </tr>
   </tbody>
 
@@ -48,7 +48,7 @@
         <span class="separator">|</span>
         <span>GW Average: {{ gwAvg | number:'1.0-2' }}</span>
         <span class="separator">|</span>
-        <span>Average Value: {{ avgVal | number:'1.0-2' }}</span>
+        <span>Average Value: {{ avgVal | number:'1.0-2' }} M</span>
       </td>
     </tr>
   </tfoot>
