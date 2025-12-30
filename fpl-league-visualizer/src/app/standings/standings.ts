@@ -25,6 +25,9 @@ export class Standings {
   totalPts: number = 0;
   totalValue: number = 0;
   gwAvg: number = 0;
+  leagueIdInput: number | null = null;
+  loading = false;
+  error = '';
 
   get avgPts(): number {
     return this.totalPts/this.results.length
@@ -89,6 +92,7 @@ export class Standings {
   }
   
   calculateStats(){  
+    this.resetStats();
     this.results.forEach(res => {
       //this.getPicks(res.id);
       this.totalPts += res.total;
@@ -101,22 +105,34 @@ export class Standings {
   }
 
   private getStatValue(squad: Squad): number {
-  switch (this.selectedStat) {
-    case 'gwPoints':
-      return squad.points;
-    case 'totalPoints':
-      return squad.total_points;
-    case 'squadValue':
-      return squad.value/10;
-    case 'pointsOnBench':
-      return squad.points_on_bench;
-    default:
-      return 0;
+    switch (this.selectedStat) {
+      case 'gwPoints':
+        return squad.points;
+      case 'totalPoints':
+        return squad.total_points;
+      case 'squadValue':
+        return squad.value/10;
+      case 'pointsOnBench':
+        return squad.points_on_bench;
+      default:
+        return 0;
+    }
   }
-}
-  
-  ngOnInit() {
-    this.standingsService.getLeagueStandingsWithPicks(2246597).subscribe(vm => {
+
+  resetStats(){
+    this.totalPts = 0;
+    this.totalValue = 0;
+    this.gwAvg = 0;
+  }
+
+  loadLeague(){
+    if (!this.leagueIdInput || this.leagueIdInput <= 0) {
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+    this.standingsService.getLeagueStandingsWithPicks(this.leagueIdInput).subscribe(vm => {
       this.standings = vm;
       this.results = [...this.standings.teams];
       this.calculateStats();
@@ -124,9 +140,15 @@ export class Standings {
       console.log(vm);
     });
   }
+  
+  ngOnInit() {
+  }
 }
 
 export type StatType =
   | 'gwPoints'
   | 'totalPoints'
   | 'squadValue';
+
+
+  // OUR LEAGUE: 2246597

@@ -1,9 +1,20 @@
 <!-- {{ results | json }} -->
-<div class="league-name" *ngIf="standings">
-  <h1>{{standings.leagueName}}</h1>
+<div class="tab-bar" >
+  <h1 *ngIf="standings">{{standings.leagueName}}</h1>
+  <h1 *ngIf="!standings">FPL Stats Visualizer</h1>
+  <div class="league-search">
+    <input
+      type="number"
+      placeholder="Enter League ID"
+      [(ngModel)]="leagueIdInput"
+      (keyup.enter)="loadLeague()"
+    />
+
+    <button (click)="loadLeague()">Search</button>
+  </div>
 </div>
 
-<table class="standings-table">
+<table class="standings-table" *ngIf="standings">
   <thead>
     <tr>
       <th>Rank</th>
@@ -43,14 +54,14 @@
   </tfoot>
 </table>
 
-<label class="stat-label">
+<label class="stat-label" *ngIf = "standings">
   Stat:
   <select
     [(ngModel)]="selectedStat"
     (change)="renderChart(18)"
   >
-    <option value="gwPoints">GW Points</option>
     <option value="totalPoints">Total Points</option>
+    <option value="gwPoints">GW Points</option>
     <option value="squadValue">Squad Value</option>
     <option value="pointsOnBench">Points on Bench</option>
   </select>
