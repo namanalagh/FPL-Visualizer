@@ -6,6 +6,8 @@ import { ChangeDetectorRef } from '@angular/core';
 import { Squad, StandingsVM, Team } from './standingsVM';
 import { Chart } from 'chart.js/auto';
 import { FormsModule } from '@angular/forms';
+import { PlayersService } from '../players-service';
+import { EventsDto, StaticDataDto } from '../StaticDataDTO';
 
 @Component({
   selector: 'app-standings',
@@ -19,7 +21,7 @@ export class Standings {
   results: Team[] = [];
   selectedStat: 'gwPoints' | 'totalPoints' | 'squadValue' | 'pointsOnBench' | 'rank' = 'totalPoints';
   showStatPopup = false;
-
+  staticData!: StaticDataDto
   @ViewChild('leagueChart') leagueChart!: ElementRef<HTMLCanvasElement>;
   chart!: Chart;
   totalPts: number = 0;
@@ -28,6 +30,7 @@ export class Standings {
   leagueIdInput: number | null = null;
   loading = false;
   error = '';
+  currentGw!: EventsDto;
 
   get avgPts(): number {
     return this.totalPts/this.results.length
@@ -36,7 +39,7 @@ export class Standings {
     return this.totalValue/this.results.length/10
   }
 
-  constructor(private standingsService: StandingsService, private cdr: ChangeDetectorRef) {}
+  constructor(private standingsService: StandingsService, private playersService: PlayersService, private cdr: ChangeDetectorRef) {}
   
   renderChart(uptoGw: number = 38) {
     if (!this.leagueChart) return;
@@ -101,12 +104,12 @@ export class Standings {
     this.results.forEach(res => {
       //this.getPicks(res.id);
       this.totalPts += res.total;
-      this.totalValue += res.squad_by_gw[18].value;
+      this.totalValue += res.squad_by_gw[19].value;
       this.gwAvg += res.event_total;
     });
     
     this.gwAvg /= this.results.length;
-    this.renderChart(18);
+    this.renderChart(19);
   }
 
   private getStatValue(squad: Squad): number {
@@ -139,7 +142,7 @@ export class Standings {
 
     this.loading = true;
     this.error = '';
-    this.standingsService.getLeagueStandingsWithPicks(this.leagueIdInput).subscribe(vm => {
+    this.standingsService.getLeagueStandingsWithPicks(this.leagueIdInput, this.currentGw.id).subscribe(vm => {
       this.standings = vm;
       this.results = [...this.standings.teams];
       this.calculateStats();
@@ -151,6 +154,10 @@ export class Standings {
   }
   
   ngOnInit() {
+    this.playersService.getStaticData().subscribe(data => {
+      this.staticData = data
+      this.currentGw = this.staticData.events.find(gw => gw.is_current)!
+    });
   }
 }
 

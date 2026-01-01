@@ -23,18 +23,6 @@ app.UseCors();
 // Health check
 app.MapGet("/", () => "FPL Backend running");
 
-// FPL standings proxy
-//app.MapGet("/api/{**path}", async (string path, IHttpClientFactory httpFactory) =>
-//{
-//    var client = httpFactory.CreateClient();
-//    var fplUrl = $"https://fantasy.premierleague.com/api/{path}";
-//    var response = await client.GetAsync(fplUrl);
-//    response.EnsureSuccessStatusCode();
-
-//    var content = await response.Content.ReadAsStringAsync();
-//    return Results.Content(content, "application/json");
-//});
-
 app.MapGet("/api/standings/{leagueId:int}", async (int leagueId, IHttpClientFactory httpFactory) =>
 {
     var client = httpFactory.CreateClient();
@@ -56,6 +44,39 @@ app.MapGet("/api/entry/{playerId:int}/event/{gw:int}/picks/", async (int playerI
     var client = httpFactory.CreateClient();
 
     var url = $"https://fantasy.premierleague.com/api/entry/{playerId}/event/{gw}/picks/";
+    var response = await client.GetAsync(url);
+
+    if (!response.IsSuccessStatusCode)
+    {
+        return Results.Problem("Failed to fetch FPL data");
+    }
+
+    var json = await response.Content.ReadAsStringAsync();
+    return Results.Content(json, "application/json");
+});
+
+app.MapGet("/api/bootstrap-static", async (IHttpClientFactory httpFactory) =>
+{
+    var client = httpFactory.CreateClient();
+
+    var response = await client.GetAsync(
+        "https://fantasy.premierleague.com/api/bootstrap-static/"
+    );
+
+    if (!response.IsSuccessStatusCode)
+    {
+        return Results.Problem("Failed to fetch FPL data");
+    }
+
+    var json = await response.Content.ReadAsStringAsync();
+    return Results.Content(json, "application/json");
+});
+
+app.MapGet("/api/element-summary/{playerId:int}", async (int playerId, IHttpClientFactory httpFactory) =>
+{
+    var client = httpFactory.CreateClient();
+
+    var url = $"https://fantasy.premierleague.com/api/element-summary/{playerId}";
     var response = await client.GetAsync(url);
 
     if (!response.IsSuccessStatusCode)

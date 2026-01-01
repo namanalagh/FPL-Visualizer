@@ -2,6 +2,15 @@
 <div class="tab-bar" >
   <h1 *ngIf="standings">{{standings.leagueName}}</h1>
   <h1 *ngIf="!standings">FPL Stats Visualizer</h1>
+  <div class="gw-info" *ngIf="standings">
+  <h3 class="gw-title">{{ currentGw.name }}</h3>
+
+  <div class="gw-stats">
+    <span>Average: {{ currentGw.average_entry_score | number:'1.0-2' }} </span>
+    <span class="separator">|</span>
+    <span> Highest: {{ currentGw.highest_score | number:'1.0-2' }}</span>
+  </div>
+</div>
   <div class="league-search">
     <input
       type="number"
@@ -36,8 +45,8 @@
       <td>{{ player.event_total }}</td>
       <td>{{ player.total }}</td>
       <td>{{ player.points_behind_leader*-1 }}</td>
-      <td>{{ player.squad_by_gw[18].points_on_bench }}</td>
-      <td>{{ player.squad_by_gw[18].value/10 }} M</td>
+      <td>{{ player.squad_by_gw[currentGw.id].points_on_bench }}</td>
+      <td>{{ player.squad_by_gw[currentGw.id].value/10 }} M</td>
     </tr>
   </tbody>
 
@@ -58,7 +67,7 @@
   Stat:
   <select
     [(ngModel)]="selectedStat"
-    (change)="renderChart(18)"
+    (change)="renderChart(currentGw.id)"
   >
     <option value="totalPoints">Total Points</option>
     <option value="rank">League Standings</option>

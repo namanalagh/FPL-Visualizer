@@ -59,6 +59,19 @@ h1, th, tfoot {
 .tab-bar h1{
   padding-left: 20px;
 }
+.gw-info {
+  text-align: center;           /* center everything horizontally */
+}
+
+.gw-title {
+  margin: 0;                    /* remove default h3 spacing */
+  line-height: 1.2;             /* tighter vertical spacing */
+}
+
+.gw-stats {
+  margin-top: 4px;              /* small, controlled gap */
+  font-size: 0.9rem;            /* optional: slightly smaller */
+}
 .league-search {
   font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   display: flex;

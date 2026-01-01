@@ -38,35 +38,6 @@ export class Squad{
     bank: number = 0;
     value: number = 100;
     points_on_bench: number = 0;
-
-
-    private calculateLeagueRanks(vm: StandingsVM) {
-        const maxGw = 18;
-
-        for (let gw = 1; gw <= maxGw; gw++) {
-            // collect scores for this GW
-            const scores = vm.teams.map(team => ({
-            team,
-            total: team.squad_by_gw[gw]?.total_points ?? 0
-            }));
-
-            // sort descending
-            scores.sort((a, b) => b.total - a.total);
-
-            // assign ranks (handles ties)
-            let rank = 1;
-            let prevTotal: number | null = null;
-
-            scores.forEach((item, index) => {
-            if (prevTotal !== null && item.total < prevTotal) {
-                rank = index + 1;
-            }
-
-            item.team.squad_by_gw[gw].rank = rank;
-            prevTotal = item.total;
-            });
-        }
-    }
 }
 
 export class SquadPlayer{
