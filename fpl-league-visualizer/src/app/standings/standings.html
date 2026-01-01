@@ -64,7 +64,6 @@
 </table>
 
 <label class="stat-label" *ngIf = "standings">
-  Stat:
   <select
     [(ngModel)]="selectedStat"
     (change)="renderChart(currentGw.id)"

@@ -1,7 +1,6 @@
 export class StandingsVM{
     leagueId = 0;
     leagueName = '';
-    // gw = 0;
     teams: Team[] = [];
 }
 
