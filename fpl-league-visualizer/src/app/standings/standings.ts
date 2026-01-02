@@ -65,11 +65,11 @@ export class Standings {
   }
 
   onStartGwChange(value: number) {
-    this.chartStartGw = value;
+    // this.chartStartGw = value;
   }
 
   onEndGwChange(value: number) {
-    this.chartEndGw = value;
+    // this.chartEndGw = value;
   }
 
   get avgPts(): number {
