@@ -3,14 +3,15 @@
   <h1 *ngIf="standings">{{standings.leagueName}}</h1>
   <h1 *ngIf="!standings">FPL Stats Visualizer</h1>
   <div class="gw-info" *ngIf="standings">
-  <h3 class="gw-title">{{ currentGw.name }}</h3>
+    <h3 class="gw-title">{{ currentGw.name }}</h3>
 
-  <div class="gw-stats">
-    <span>Average: {{ currentGw.average_entry_score | number:'1.0-2' }} </span>
-    <span class="separator">|</span>
-    <span> Highest: {{ currentGw.highest_score | number:'1.0-2' }}</span>
+    <div class="gw-stats">
+      <span>Average: {{ currentGw.average_entry_score | number:'1.0-2' }} </span>
+      <span class="separator">|</span>
+      <span> Highest: {{ currentGw.highest_score | number:'1.0-2' }}</span>
+    </div>
   </div>
-</div>
+
   <div class="league-search">
     <input
       type="number"
@@ -63,18 +64,40 @@
   </tfoot>
 </table>
 
-<label class="stat-label" *ngIf = "standings">
-  <select
-    [(ngModel)]="selectedStat"
-    (change)="renderChart(currentGw.id)"
-  >
-    <option value="totalPoints">Total Points</option>
-    <option value="rank">League Standings</option>
-    <option value="gwPoints">GW Points</option>
-    <option value="squadValue">Squad Value</option>
-    <option value="pointsOnBench">Points on Bench</option>
-  </select>
-</label>
+<div class="chart-params" *ngIf = "standings">
+  <label class="stat-label">
+    <select
+      [(ngModel)]="selectedStat"
+      (change)="renderChart(chartStartGw, chartEndGw)"
+    >
+      <option value="totalPoints">Total Points</option>
+      <option value="rank">League Standings</option>
+      <option value="gwPoints">GW Points</option>
+      <option value="squadValue">Squad Value</option>
+      <option value="pointsOnBench">Points on Bench</option>
+    </select>
+  </label>
+  <div class="chart-params-gw">
+    <label>From GW: </label>
+    <input
+       type="number"
+       min="1"
+      [max]="chartEndGw-1"
+       [(ngModel)]="chartStartGw"
+       (ngModelChange)="onStartGwChange($event)"
+       (keyup.enter)="renderChart(chartStartGw, chartEndGw)"
+     />
+     <label>To GW: </label>
+     <input
+       type="number"
+       [min]="chartStartGw"
+       [max]="currentGw.id"
+       [(ngModel)]="chartEndGw"
+       (ngModelChange)="onEndGwChange($event)"
+       (keyup.enter)="renderChart(chartStartGw, chartEndGw)"
+     />
+  </div>
+</div>
 
 <div class="chart-wrapper">
   <canvas #leagueChart></canvas>

@@ -24,11 +24,11 @@ h1, th, tfoot {
   border-collapse: collapse;
   text-align: left;
   table-layout: auto;
-  text-overflow: ellipsis; /* prevent overflow text from breaking layout */
-  /* white-space: nowrap; */
+  text-overflow: ellipsis; 
+  
 }
 .standings-table tbody tr td {
-  color: #000000; /* black font */
+  color: #000000; 
 }
 .table-footer {
   background: var(--pl-purple);
@@ -60,17 +60,17 @@ h1, th, tfoot {
   padding-left: 20px;
 }
 .gw-info {
-  text-align: center;           /* center everything horizontally */
+  text-align: center;           
 }
 
 .gw-title {
-  margin: 0;                    /* remove default h3 spacing */
-  line-height: 1.2;             /* tighter vertical spacing */
+  margin: 0;               
+  line-height: 1.2;            
 }
 
 .gw-stats {
-  margin-top: 4px;              /* small, controlled gap */
-  font-size: 0.9rem;            /* optional: slightly smaller */
+  margin-top: 4px;              
+  font-size: 0.9rem;           
 }
 .league-search {
   font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -102,6 +102,37 @@ canvas {
   width: 100% !important;
   height: 100% !important;
 }
+.chart-params {
+  display: flex;
+  align-items: center;
+}
+
+.chart-params-gw {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  padding-right: 20px;
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.chart-params-gw input {
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  width: 60px;
+  font-size: 18px;
+  font-weight: 500;
+  background-color: var(--pl-purple);
+  color: white;
+  padding-left: 5px;
+}
+.chart-params-gw label{
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+}
 .stat-label {
   font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   display: flex;
@@ -111,11 +142,13 @@ canvas {
   margin-bottom: 12px;
   font-weight: 600;
   font-size: 14px;
+  padding-left: 20px;
+  
 }
 
 .stat-label select {
   font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  appearance: none;       /* Remove default arrow styling */
+  appearance: none;       
   -webkit-appearance: none;
   -moz-appearance: none;
   justify-content: center;
@@ -126,9 +159,8 @@ canvas {
   font-size: 18px;
   font-weight: 600;
 
-  /* border: 2px solid #37003c;   Dark PL purple border */
-  /* border-radius: 4px;          Slightly rounded corners */
-  background-color: var(--pl-purple);   /* PL purple background */
+  
+  background-color: var(--pl-purple);  
   color: white;
 
   cursor: pointer;
