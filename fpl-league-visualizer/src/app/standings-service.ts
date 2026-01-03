@@ -18,14 +18,14 @@ export class StandingsService {
       'Content-Type': 'application/json'
     });
     
-    return this.http.get<StandingsDto>(`https://localhost:7043/api/standings/${leagueId}`).pipe(map(
+    return this.http.get<StandingsDto>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/standings/${leagueId}`).pipe(map(
       dto => this.mapToStandingsVM(dto)
     ));
   }
 
   getTeamPicks(playerId: number, gw: number) {
     return this.http
-      .get<GwPicksDto>(`https://localhost:7043/api/entry/${playerId}/event/${gw}/picks/`)
+      .get<GwPicksDto>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/entry/${playerId}/event/${gw}/picks/`)
       .pipe(
         tap(res => console.log('GW PICKS RAW', playerId, gw, res)),
         map(dto => this.mapToSquad(dto, gw)),

@@ -12,11 +12,11 @@ export class PlayersService {
   constructor(private http: HttpClient) {}
   
   getStaticData(){
-    return this.http.get<StaticDataDto>(`https://localhost:7043/api/bootstrap-static`);
+    return this.http.get<StaticDataDto>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/bootstrap-static`);
   }
   
   getPlayerData(id: number){
-    return this.http.get<PlayersCumulativeDto>(`https://localhost:7043//api/element-summary/${id}`)
+    return this.http.get<PlayersCumulativeDto>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/element-summary/${id}`)
   }
 
   setStaticData(data: StaticDataDto) {

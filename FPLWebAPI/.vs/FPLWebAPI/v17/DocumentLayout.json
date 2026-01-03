@@ -1,10 +1,18 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\",
+  "WorkspaceRootPath": "C:\\Users\\naman\\Desktop\\Projects\\FPLVisNew\\FPL-Visualizer\\FPLWebAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{387AEBA2-34B3-4C6D-A6E7-A1F16AE9D992}|FPLWebAPI.csproj|c:\\users\\naman\\onedrive\\desktop\\projects\\fpl-visualizer\\fplwebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{387AEBA2-34B3-4C6D-A6E7-A1F16AE9D992}|FPLWebAPI.csproj|c:\\users\\naman\\desktop\\projects\\fplvisnew\\fpl-visualizer\\fplwebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{387AEBA2-34B3-4C6D-A6E7-A1F16AE9D992}|FPLWebAPI.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{387AEBA2-34B3-4C6D-A6E7-A1F16AE9D992}|FPLWebAPI.csproj|c:\\users\\naman\\desktop\\projects\\fplvisnew\\fpl-visualizer\\fplwebapi\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{387AEBA2-34B3-4C6D-A6E7-A1F16AE9D992}|FPLWebAPI.csproj|solutionrelative:appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{387AEBA2-34B3-4C6D-A6E7-A1F16AE9D992}|FPLWebAPI.csproj|c:\\users\\naman\\desktop\\projects\\fplvisnew\\fpl-visualizer\\fplwebapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{387AEBA2-34B3-4C6D-A6E7-A1F16AE9D992}|FPLWebAPI.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,17 +22,43 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\naman\\Desktop\\Projects\\FPLVisNew\\FPL-Visualizer\\FPLWebAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\naman\\Desktop\\Projects\\FPLVisNew\\FPL-Visualizer\\FPLWebAPI\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-01-03T09:57:36.316Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\naman\\Desktop\\Projects\\FPLVisNew\\FPL-Visualizer\\FPLWebAPI\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "appsettings.Development.json",
+              "ToolTip": "C:\\Users\\naman\\Desktop\\Projects\\FPLVisNew\\FPL-Visualizer\\FPLWebAPI\\appsettings.Development.json",
+              "RelativeToolTip": "appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-01-03T09:50:27.279Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\naman\\Desktop\\Projects\\FPLVisNew\\FPL-Visualizer\\FPLWebAPI\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\Program.cs",
+              "ToolTip": "C:\\Users\\naman\\Desktop\\Projects\\FPLVisNew\\FPL-Visualizer\\FPLWebAPI\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAADkAAAAAAAAAAAAAAD4AAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-27T07:21:13.933Z",
               "EditorCaption": ""

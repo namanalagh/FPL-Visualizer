@@ -453,11 +453,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\FPLWebAPI.csproj",
+      "projectUniqueName": "C:\\Users\\naman\\Desktop\\Projects\\FPLVisNew\\FPL-Visualizer\\FPLWebAPI\\FPLWebAPI.csproj",
       "projectName": "FPLWebAPI",
-      "projectPath": "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\FPLWebAPI.csproj",
+      "projectPath": "C:\\Users\\naman\\Desktop\\Projects\\FPLVisNew\\FPL-Visualizer\\FPLWebAPI\\FPLWebAPI.csproj",
       "packagesPath": "C:\\Users\\naman\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\naman\\OneDrive\\Desktop\\Projects\\FPL-Visualizer\\FPLWebAPI\\obj\\",
+      "outputPath": "C:\\Users\\naman\\Desktop\\Projects\\FPLVisNew\\FPL-Visualizer\\FPLWebAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

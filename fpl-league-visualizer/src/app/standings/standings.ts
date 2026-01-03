@@ -33,6 +33,8 @@ export class Standings {
   currentGw!: EventsDto;
   _chartStartGw = 1;
   _chartEndGw = this.currentGw?.id ?? 38
+  cumulative = false
+  showCumulative = false
 
   get chartStartGw(): number{
     return this._chartStartGw;
@@ -90,14 +92,22 @@ export class Standings {
       (_, i) => `GW ${i + fromGw}`
     );
 
-    const datasets = top10Teams.map(team => ({
-      label: team.entry_name,
-      data: team.squad_by_gw
-        .slice(fromGw, uptoGw + 1)
-        .map(s => this.getStatValue(s)),
-      tension: 0.25,
-      pointRadius: 0
-    }));
+    const datasets = top10Teams.map(team => {
+
+      const values = team.squad_by_gw.slice(fromGw, uptoGw + 1).map(s => this.getStatValue(s))
+      
+      const data = this.showCumulative &&  this.cumulative ? values.reduce<number[]>((acc, val, i) => {
+        acc.push((acc[i - 1] ?? 0) + val);
+        return acc;
+      }, []) : values;
+
+      return {
+        label: team.entry_name,
+        data: data,
+        tension: 0.25,
+        pointRadius: 0
+      }
+    });
 
     console.log(datasets)
 
@@ -142,7 +152,6 @@ export class Standings {
   calculateStats(){  
     this.resetStats();
     this.results.forEach(res => {
-      //this.getPicks(res.id);
       this.totalPts += res.total;
       this.totalValue += res.squad_by_gw[this.currentGw.id].value;
       this.gwAvg += res.event_total;
@@ -155,14 +164,19 @@ export class Standings {
   private getStatValue(squad: Squad): number {
     switch (this.selectedStat) {
       case 'gwPoints':
+        this.showCumulative = true
         return squad.points;
       case 'totalPoints':
+        this.showCumulative = false
         return squad.total_points;
       case 'squadValue':
+        this.showCumulative = false
         return squad.value/10;
       case 'pointsOnBench':
+        this.showCumulative = true
         return squad.points_on_bench;
       case 'rank':
+        this.showCumulative = false
         return squad.rank;
       default:
         return 0;

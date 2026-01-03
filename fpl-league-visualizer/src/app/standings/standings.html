@@ -6,9 +6,9 @@
     <h3 class="gw-title">{{ currentGw.name }}</h3>
 
     <div class="gw-stats">
-      <span>Average: {{ currentGw.average_entry_score | number:'1.0-2' }} </span>
+      <span>Average: {{ currentGw.average_entry_score }} </span>
       <span class="separator">|</span>
-      <span> Highest: {{ currentGw.highest_score | number:'1.0-2' }}</span>
+      <span> Highest: {{ currentGw.highest_score }}</span>
     </div>
   </div>
 
@@ -54,11 +54,11 @@
   <tfoot>
     <tr class="table-footer">
       <td colspan="100%">
-        <span>Average Points: {{ avgPts | number:'1.0-2' }}</span>
+        <span>Average Points: {{ avgPts | number:'1.0-0' }}</span>
         <span class="separator">|</span>
-        <span>GW Average: {{ gwAvg | number:'1.0-2' }}</span>
+        <span>GW Average: {{ gwAvg | number:'1.0-0' }}</span>
         <span class="separator">|</span>
-        <span>Average Value: {{ avgVal | number:'1.0-2' }} M</span>
+        <span>Average Value: {{ avgVal | number:'1.1-1' }} M</span>
       </td>
     </tr>
   </tfoot>
@@ -78,6 +78,17 @@
     </select>
   </label>
   <div class="chart-params-gw">
+    <div class="chart-params-gw-cumulative">
+      <label *ngIf = "standings && showCumulative">
+        Cumulative
+        <input 
+          type="checkbox" 
+          id="cumulative" 
+          [(ngModel)]="cumulative" 
+          (change)="renderChart(chartStartGw, chartEndGw)">
+      </label>
+      <!-- <span class="white-separator">|</span> -->
+    </div>
     <label>From GW: </label>
     <input
        type="number"

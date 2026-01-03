@@ -47,6 +47,11 @@ h1, th, tfoot {
 .separator {
   opacity: 0.5;
 }
+.white-separator {
+  color: white;
+  /* opacity: 0.5; */
+  padding: 20px
+}
 .tab-bar{
   display: flex;
   align-items: center;          
@@ -117,8 +122,13 @@ canvas {
   font-weight: 600;
   font-size: 14px;
 }
-
-.chart-params-gw input {
+.chart-params-gw-cumulative {
+  padding-right: 20px;
+}
+.chart-params-gw-cumulative label {
+  gap: 2px;
+}
+.chart-params-gw input[type="number"] {
   font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   width: 60px;
   font-size: 18px;

@@ -7,8 +7,12 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
+        var allowedOrigins = builder.Configuration
+           .GetSection("Cors:AllowedOrigins")
+           .Get<string[]>();
+
         policy
-            .AllowAnyOrigin()
+            .WithOrigins(allowedOrigins ?? Array.Empty<string>())
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
