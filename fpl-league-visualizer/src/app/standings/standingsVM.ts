@@ -13,7 +13,6 @@ export class Team{
     total: number = 0;
     squad_by_gw: Squad[] = [];
     points_behind_leader = 0;
-
     /**
      *
      */
@@ -37,6 +36,11 @@ export class Squad{
     bank: number = 0;
     value: number = 100;
     points_on_bench: number = 0;
+    goals_scored: number = 0;
+    assists: number = 0
+    clean_sheets: number = 0
+    goals_conceded: number = 0
+    saves: number = 0
 }
 
 export class SquadPlayer{

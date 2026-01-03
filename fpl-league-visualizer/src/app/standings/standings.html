@@ -8,7 +8,7 @@
     <div class="gw-stats">
       <span>Average: {{ currentGw.average_entry_score }} </span>
       <span class="separator">|</span>
-      <span> Highest: {{ currentGw.highest_score }}</span>
+      <span> Highest: {{ currentGw.highest_score ?? 0 }}</span>
     </div>
   </div>
 
@@ -75,6 +75,7 @@
       <option value="gwPoints">GW Points</option>
       <option value="squadValue">Squad Value</option>
       <option value="pointsOnBench">Points on Bench</option>
+      <option value="goalsScored">Goals Scored</option>
     </select>
   </label>
   <div class="chart-params-gw">

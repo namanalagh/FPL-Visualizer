@@ -33,17 +33,74 @@ export class PlayersService {
     this.playerGwCache.set(playerId, gwMap);
   }
 
-  buildFullCache(data: Record<number, PlayerGwDto[]>){
+  buildFullCache(data: Record<number, PlayerGwDto[]>) {
+    console.log('[PlayerGwCache] Building full cache...');
+    console.log('[PlayerGwCache] Incoming players:', Object.keys(data).length);
+
     Object.entries(data).forEach(([playerId, stats]) => {
+      console.log(
+        `[PlayerGwCache] Building cache for player ${playerId}, GW count: ${stats.length}`
+      );
+
       const gwMap = new Map<number, PlayerGwDto>();
-      stats.forEach(s => gwMap.set(s.round, s));
+
+      stats.forEach(s => {
+        console.log(
+          `[PlayerGwCache] → player ${playerId}, GW ${s.round}`,
+          s
+        );
+        gwMap.set(s.round, s);
+      });
+
       this.playerGwCache.set(+playerId, gwMap);
     });
+
+    console.log(
+      '[PlayerGwCache] Cache build complete. Players cached:',
+      this.playerGwCache.size
+    );
   }
 
-  getPlayerGwStat(playerId: number, gw: number) : PlayerGwDto | undefined {
-    return this.playerGwCache.get(playerId)?.get(gw);
+  getPlayerGwStats(playerId: number, gw: number): PlayerGwDto | undefined {
+    const playerCache = this.playerGwCache.get(playerId);
+
+    if (!playerCache) {
+      console.warn(
+        `[PlayerGwCache] MISS: No cache found for player ${playerId}`
+      );
+      return undefined;
+    }
+
+    const gwStat = playerCache.get(gw);
+
+    if (!gwStat) {
+      console.warn(
+        `[PlayerGwCache] MISS: Player ${playerId} has no data for GW ${gw}`
+      );
+      return undefined;
+    }
+
+    console.log(
+      `[PlayerGwCache] HIT: Player ${playerId}, GW ${gw}`,
+      gwStat
+    );
+
+    return gwStat;
   }
+
+
+  // buildFullCache(data: Record<number, PlayerGwDto[]>){
+  //   Object.entries(data).forEach(([playerId, stats]) => {
+  //     const gwMap = new Map<number, PlayerGwDto>();
+  //     stats.forEach(s => gwMap.set(s.round, s));
+  //     this.playerGwCache.set(+playerId, gwMap);
+  //   });
+  // }
+
+  // getPlayerGwStats(playerId: number, gw: number) : PlayerGwDto | undefined {
+  //   console.log(this.playerGwCache.get(playerId)?.get(gw))
+  //   return this.playerGwCache.get(playerId)?.get(gw);
+  // }
 }
 
 export type PlayerGwCache =

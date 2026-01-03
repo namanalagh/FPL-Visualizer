@@ -19,7 +19,7 @@ import { EventsDto, StaticDataDto } from '../StaticDataDTO';
 export class Standings {
   standings!: StandingsVM;
   results: Team[] = [];
-  selectedStat: 'gwPoints' | 'totalPoints' | 'squadValue' | 'pointsOnBench' | 'rank' = 'totalPoints';
+  selectedStat: 'gwPoints' | 'totalPoints' | 'squadValue' | 'pointsOnBench' | 'rank' | 'goalsScored'= 'totalPoints';
   showStatPopup = false;
   staticData!: StaticDataDto
   @ViewChild('leagueChart') leagueChart!: ElementRef<HTMLCanvasElement>;
@@ -109,7 +109,7 @@ export class Standings {
       }
     });
 
-    console.log(datasets)
+    // console.log(datasets)
 
     this.chart?.destroy();
 
@@ -178,6 +178,9 @@ export class Standings {
       case 'rank':
         this.showCumulative = false
         return squad.rank;
+      case 'goalsScored':
+        this.showCumulative = true
+        return squad.goals_scored;
       default:
         return 0;
     }
@@ -201,7 +204,7 @@ export class Standings {
       this.results = [...this.standings.teams];
       this.calculateStats();
       this.cdr.detectChanges();  
-      console.log(vm);
+      // console.log(vm);
     });
 
     

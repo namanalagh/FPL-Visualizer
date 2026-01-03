@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { GwPicksDto, StandingsDto } from './standings/standingsDTO';
 import { Squad, SquadPlayer, StandingsVM, Team } from './standings/standingsVM';
 import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { PlayersService } from './players-service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 export class StandingsService {
   private baseUrl = '/fpl/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private playersService: PlayersService) {}
 
   getLeagueStandings(leagueId: number){
 
@@ -29,7 +30,7 @@ export class StandingsService {
       .pipe(
         tap(res => console.log('GW PICKS RAW', playerId, gw, res)),
         map(dto => this.mapToSquad(dto, gw)),
-        tap(squad => console.log('MAPPED SQUAD', squad)),
+        // tap(squad => console.log('MAPPED SQUAD', squad)),
         catchError(() => {
           const squad = new Squad();
           squad.gw = gw; // set the current gameweek
@@ -49,6 +50,7 @@ export class StandingsService {
     squad.bank = dto.entry_history.bank ?? 0;
     squad.value = dto.entry_history.value ?? 1000;
     squad.points_on_bench = dto.entry_history.points_on_bench ?? 0;
+    this.populateSquadStats(squad);
 
     squad.squad_players = dto.picks.map(p => ({
       element: p.element,
@@ -61,6 +63,29 @@ export class StandingsService {
 
     return squad;
   }
+
+  private populateSquadStats(squad: Squad) {
+    squad.goals_scored = 0;
+    squad.assists = 0;
+    squad.clean_sheets = 0;
+    squad.goals_conceded = 0;
+    squad.saves = 0;
+    
+    for (const sp of squad.squad_players) {
+      
+      const stats = this.playersService.getPlayerGwStats(sp.element, squad.gw);
+      if (!stats) continue;
+      
+      const multiplier = sp.multiplier ?? 1;
+      
+      squad.goals_scored += stats.goals_scored * multiplier;
+      squad.assists += stats.assists * multiplier;
+      squad.clean_sheets += stats.clean_sheets;
+      squad.goals_conceded += stats.goals_conceded;
+      squad.saves += stats.saves;
+    }
+    // console.log('Goals: ', squad.goals_scored)
+}
 
   private mapToStandingsVM(dto: StandingsDto): StandingsVM {
     const vm = new StandingsVM();
@@ -87,6 +112,10 @@ export class StandingsService {
 
   getLeagueStandingsWithPicks(leagueId: number, gw: number) {
   return this.getLeagueStandings(leagueId).pipe(
+     map(vm => {
+        vm.teams = vm.teams.slice(0, 25);
+        return vm;
+      }),
       switchMap(vm => this.attachTeamPicks(vm, gw).pipe(
         map(() =>  {
           this.calculateLeagueRanks(vm, gw);
