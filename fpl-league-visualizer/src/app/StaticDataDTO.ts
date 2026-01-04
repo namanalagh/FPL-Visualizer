@@ -38,7 +38,12 @@ export interface PlayersCumulativeDto{
     starts: number
 }
 
-export interface PlayerGwDto {
+export interface PlayerDTO {
+    history: PlayerGwDto[];
+}
+
+export interface PlayerGwDto { // use this to make a cache 
+    element: number;
     round: number; // gw
     minutes: number;
     goals_scored: number;

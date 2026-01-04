@@ -70,22 +70,36 @@ export class StandingsService {
     squad.clean_sheets = 0;
     squad.goals_conceded = 0;
     squad.saves = 0;
-    
+
     for (const sp of squad.squad_players) {
-      
       const stats = this.playersService.getPlayerGwStats(sp.element, squad.gw);
       if (!stats) continue;
-      
+
       const multiplier = sp.multiplier ?? 1;
-      
+
       squad.goals_scored += stats.goals_scored * multiplier;
       squad.assists += stats.assists * multiplier;
-      squad.clean_sheets += stats.clean_sheets;
-      squad.goals_conceded += stats.goals_conceded;
-      squad.saves += stats.saves;
+      squad.clean_sheets += stats.clean_sheets * multiplier;
+      squad.goals_conceded += stats.goals_conceded * multiplier;
+      squad.saves += stats.saves * multiplier;
     }
-    // console.log('Goals: ', squad.goals_scored)
-}
+  }
+
+  private ensurePlayersForSquad(players: SquadPlayer[]) {
+    const uniquePlayerIds = Array.from(
+      new Set(players.map(p => p.element))
+    );
+
+    if (uniquePlayerIds.length === 0) {
+      return of(true);
+    }
+
+    const requests = uniquePlayerIds.map(id =>
+      this.playersService.ensurePlayerGwData(id)
+    );
+
+    return forkJoin(requests).pipe(map(() => true));
+  }
 
   private mapToStandingsVM(dto: StandingsDto): StandingsVM {
     const vm = new StandingsVM();
@@ -127,25 +141,31 @@ export class StandingsService {
 
   private attachTeamPicks(vm: StandingsVM, maxGw: number) {
     const teamRequests = vm.teams.map(team => {
-      const gwRequests = Array.from(
-        { length: maxGw },
-        (_, i) => i + 1
-      ).map(gw =>
+
+      const gwRequests = Array.from({ length: maxGw }, (_, i) => i + 1).map(gw =>
         this.getTeamPicks(team.id, gw).pipe(
-          map(picks => {
-            team.squad_by_gw[gw] = picks; // 1-indexed 
-            return true;
-          })
+
+          switchMap(squad =>
+            this.ensurePlayersForSquad(squad.squad_players).pipe(
+              map(() => squad)
+            )
+          ),
+
+          tap(squad => {
+            this.populateSquadStats(squad);
+            team.squad_by_gw[gw] = squad; // 1-indexed
+          }),
+
+          map(() => true)
         )
       );
 
       return forkJoin(gwRequests);
     });
 
-    return forkJoin(teamRequests).pipe(
-      map(() => vm)
-    );
+    return forkJoin(teamRequests).pipe(map(() => vm));
   }
+
 
   private calculateLeagueRanks(vm: StandingsVM, gw: number) {
       const maxGw = gw;

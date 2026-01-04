@@ -19,7 +19,7 @@ import { EventsDto, StaticDataDto } from '../StaticDataDTO';
 export class Standings {
   standings!: StandingsVM;
   results: Team[] = [];
-  selectedStat: 'gwPoints' | 'totalPoints' | 'squadValue' | 'pointsOnBench' | 'rank' | 'goalsScored'= 'totalPoints';
+  selectedStat: StatOption = 'totalPoints';
   showStatPopup = false;
   staticData!: StaticDataDto
   @ViewChild('leagueChart') leagueChart!: ElementRef<HTMLCanvasElement>;
@@ -181,6 +181,15 @@ export class Standings {
       case 'goalsScored':
         this.showCumulative = true
         return squad.goals_scored;
+      case 'assists':
+        this.showCumulative = true
+        return squad.assists;
+      case 'cleanSheets':
+        this.showCumulative = true
+        return squad.clean_sheets;
+      case 'saves':
+        this.showCumulative = true
+        return squad.saves;
       default:
         return 0;
     }
@@ -218,5 +227,16 @@ export class Standings {
     });
   }
 }
+
+export type StatOption = 
+  | 'gwPoints' 
+  | 'totalPoints' 
+  | 'squadValue' 
+  | 'pointsOnBench' 
+  | 'rank' 
+  | 'goalsScored'
+  | 'assists'
+  | 'cleanSheets'
+  | 'saves';
 
   // OUR LEAGUE: 2246597
