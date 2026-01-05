@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { StandingsService } from '../standings-service';
 import { StandingEntryDto, StandingsDto } from './standingsDTO';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,7 @@ import { Chart } from 'chart.js/auto';
 import { FormsModule } from '@angular/forms';
 import { PlayersService } from '../players-service';
 import { EventsDto, StaticDataDto } from '../StaticDataDTO';
+import { FavouriteLeague, FavouritesService } from '../favourites-service';
 
 @Component({
   selector: 'app-standings',
@@ -35,6 +36,8 @@ export class Standings {
   _chartEndGw = this.currentGw?.id ?? 38
   cumulative = false
   showCumulative = false
+  showFavourites = false
+  favourites!: FavouriteLeague[]
 
   get chartStartGw(): number{
     return this._chartStartGw;
@@ -65,13 +68,21 @@ export class Standings {
 
     this._chartEndGw = value;
   }
-
-  onStartGwChange(value: number) {
-    // this.chartStartGw = value;
+  get isFavourite(): boolean {
+    return !!this.standings && this.favouritesService.isFavourite(this.standings.leagueId);
   }
 
-  onEndGwChange(value: number) {
-    // this.chartEndGw = value;
+  @ViewChild('searchContainer', { static: true })
+  searchContainer!: ElementRef;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.searchContainer.nativeElement.contains(event.target)) {
+      this.showFavourites = false;
+    }
+    else {
+      this.showFavourites = true;
+    }
   }
 
   get avgPts(): number {
@@ -81,7 +92,7 @@ export class Standings {
     return this.totalValue/this.results.length/10
   }
 
-  constructor(private standingsService: StandingsService, private playersService: PlayersService, private cdr: ChangeDetectorRef) {}
+  constructor(private standingsService: StandingsService, private playersService: PlayersService, private favouritesService: FavouritesService, private cdr: ChangeDetectorRef) {}
   
   renderChart(fromGw: number = 1, uptoGw: number = 38) {
     if (!this.leagueChart) return;
@@ -195,10 +206,38 @@ export class Standings {
     }
   }
 
+  toggleFavourite(event: MouseEvent) {
+    event.stopPropagation();
+
+    if (!this.standings) return;
+
+    const league = {
+      id: this.standings.leagueId,
+      name: this.standings.leagueName
+    };
+
+    if (this.isFavourite) {
+      this.favouritesService.remove(league.id);
+    } else {
+      this.favouritesService.add(league);
+    }
+
+    this.favourites = this.favouritesService.getAll();
+  }
+
+  hideFavourites() {
+    setTimeout(() => (this.showFavourites = false), 150);
+  }
+
   resetStats(){
     this.totalPts = 0;
     this.totalValue = 0;
     this.gwAvg = 0;
+  }
+
+  selectFavourite(fav: FavouriteLeague){
+    this.leagueIdInput = fav.id;
+    this.loadLeague();
   }
 
   loadLeague(){
@@ -220,6 +259,7 @@ export class Standings {
   }
   
   ngOnInit() {
+    this.favourites = this.favouritesService.getAll();
     this.playersService.getStaticData().subscribe(data => {
       this.staticData = data
       this.currentGw = this.staticData.events.find(gw => gw.is_current)!

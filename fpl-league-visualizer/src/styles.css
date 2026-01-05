@@ -67,7 +67,16 @@ h1, th, tfoot {
 .gw-info {
   text-align: center;           
 }
-
+.site-info{
+  color: white;
+  display: flex;
+  align-items: center;
+  background-color: var(--pl-purple);
+  justify-content: center;   
+}
+.green-text {
+  color: var(--pl-green);
+}
 .gw-title {
   margin: 0;               
   line-height: 1.2;            
@@ -93,10 +102,36 @@ h1, th, tfoot {
   min-width: 0;
   font-weight: 600;
 }
+.search-input-wrapper{
+  position: relative; 
+  display: flex;
+  flex: 1;
+}
 .league-search button{
   background-color: var(--pl-pink);
   font-size: 18px;
   height: 40px;
+}
+.favourites-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  color: black;
+  width: 100%;
+  max-height: 240px;
+  overflow-y: auto;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  z-index: 10;
+}
+
+.fav-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.fav-item:hover {
+  background: #f2f2f2;
 }
 .chart-wrapper {
   width: 100%;
@@ -193,3 +228,4 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+

@@ -1,4 +1,3 @@
-<!-- {{ results | json }} -->
 <div class="tab-bar" >
   <h1 *ngIf="standings">{{standings.leagueName}}</h1>
   <h1 *ngIf="!standings">FPL Stats Visualizer</h1>
@@ -12,16 +11,51 @@
     </div>
   </div>
 
-  <div class="league-search">
-    <input
+  <div class="league-search"  #searchContainer>
+    <div class="search-input-wrapper">
+      <input
       type="number"
       placeholder="Enter League ID"
       [(ngModel)]="leagueIdInput"
+      (focus)="showFavourites = true"
+      (blur)="hideFavourites()"
       (keyup.enter)="loadLeague()"
-    />
+      />
+
+      <button
+      class="star-btn"
+      (click)="toggleFavourite($event)"
+      [class.active]="isFavourite"
+      aria-label="Favourite league"
+      >
+      {{isFavourite ? '★' : '☆'}}
+      </button>
+      
+      <div class="favourites-dropdown" *ngIf="showFavourites && favourites.length">
+        <div
+          class="fav-item"
+          *ngFor="let fav of favourites"
+          (mousedown)="selectFavourite(fav)"
+        >
+          ★ {{ fav.name }} ({{ fav.id }})
+        </div>
+      </div>
+    </div>
 
     <button (click)="loadLeague()">Search</button>
+
   </div>
+</div>
+
+<div class="site-info" *ngIf="!standings">
+  <h4>To find your League ID, view your league at <a
+      href="https://fantasy.premierleague.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="green-text"
+    >
+      https://fantasy.premierleague.com/
+    </a> and look for your League ID in the URL: leagues/<span class="green-text">your-league-id</span>/standings</h4>
 </div>
 
 <table class="standings-table" *ngIf="standings">
@@ -99,7 +133,7 @@
        min="1"
       [max]="chartEndGw-1"
        [(ngModel)]="chartStartGw"
-       (ngModelChange)="onStartGwChange($event)"
+       
        (keyup.enter)="renderChart(chartStartGw, chartEndGw)"
      />
      <label>To GW: </label>
@@ -108,7 +142,7 @@
        [min]="chartStartGw"
        [max]="currentGw.id"
        [(ngModel)]="chartEndGw"
-       (ngModelChange)="onEndGwChange($event)"
+       
        (keyup.enter)="renderChart(chartStartGw, chartEndGw)"
      />
   </div>
