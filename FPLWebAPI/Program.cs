@@ -59,6 +59,22 @@ app.MapGet("/api/entry/{playerId:int}/event/{gw:int}/picks/", async (int playerI
     return Results.Content(json, "application/json");
 });
 
+app.MapGet("/api/entry/{playerId:int}/", async (int playerId, IHttpClientFactory httpFactory) =>
+{
+    var client = httpFactory.CreateClient();
+
+    var url = $"https://fantasy.premierleague.com/api/entry/{playerId}/";
+    var response = await client.GetAsync(url);
+
+    if (!response.IsSuccessStatusCode)
+    {
+        return Results.Problem("Failed to fetch FPL data");
+    }
+
+    var json = await response.Content.ReadAsStringAsync();
+    return Results.Content(json, "application/json");
+});
+
 app.MapGet("/api/bootstrap-static", async (IHttpClientFactory httpFactory) =>
 {
     var client = httpFactory.CreateClient();

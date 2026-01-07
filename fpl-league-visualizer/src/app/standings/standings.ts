@@ -4,7 +4,7 @@ import { StandingEntryDto, StandingsDto } from './standingsDTO';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { Squad, StandingsVM, Team } from './standingsVM';
-import { Chart } from 'chart.js/auto';
+import { Chart, ScriptableLineSegmentContext  } from 'chart.js/auto';
 import { FormsModule } from '@angular/forms';
 import { PlayersService } from '../players-service';
 import { EventsDto, StaticDataDto } from '../StaticDataDTO';
@@ -32,10 +32,12 @@ export class Standings {
   loading = false;
   error = '';
   currentGw!: EventsDto;
+  projections = false
   _chartStartGw = 1;
-  _chartEndGw = this.currentGw?.id ?? 38
+  _chartEndGw = this.projections ? 38 : this.currentGw?.id ?? 38
   cumulative = false
   showCumulative = false
+  showProjectionsBox = false
   showFavourites = false
   favourites!: FavouriteLeague[]
 
@@ -63,7 +65,7 @@ export class Standings {
     if (isNaN(value)) return;
 
     // clamp
-    value = Math.min(this.currentGw.id, value);
+    value = Math.min(this.projections ? 38 : this.currentGw.id, value);
     value = Math.max(value, this._chartStartGw+1);
 
     this._chartEndGw = value;
@@ -94,9 +96,17 @@ export class Standings {
 
   constructor(private standingsService: StandingsService, private playersService: PlayersService, private favouritesService: FavouritesService, private cdr: ChangeDetectorRef) {}
   
+  onProjectionsChange(checked: boolean) {
+    const maxGw = checked ? 38 : this.currentGw.id;
+
+    this.chartEndGw = maxGw;
+    this.renderChart(this.chartStartGw, this.chartEndGw);
+  }
+
   renderChart(fromGw: number = 1, uptoGw: number = 38) {
     if (!this.leagueChart) return;
     const top10Teams = this.standings.teams.slice(0, 10);
+    const dashFromIndex = this.currentGw.id-fromGw; 
 
     const labels = Array.from(
       { length: uptoGw - fromGw + 1 },
@@ -107,16 +117,33 @@ export class Standings {
 
       const values = team.squad_by_gw.slice(fromGw, uptoGw + 1).map(s => this.getStatValue(s))
       
-      const data = this.showCumulative &&  this.cumulative ? values.reduce<number[]>((acc, val, i) => {
+      var data = this.showCumulative &&  this.cumulative ? values.reduce<number[]>((acc, val, i) => {
         acc.push((acc[i - 1] ?? 0) + val);
         return acc;
       }, []) : values;
 
+      if(this.projections && this.currentGw.id < 38){
+        let t = team.total;
+        for (let i: number = this.currentGw.id+1; i <= 38; i++) {
+          t += (team.total/(this.currentGw.id-team.started_event+1));
+          data[i-fromGw] = Math.trunc(t);
+        }
+      }
+
       return {
         label: team.entry_name,
         data: data,
+        pointStyle: 'circle',
         tension: 0.25,
-        pointRadius: 0
+        pointRadius: 3,
+        segment: {
+          borderDash: (ctx: ScriptableLineSegmentContext) => {
+            // ctx.p0DataIndex = starting point of the segment
+            return ctx.p0DataIndex >= dashFromIndex
+              ? [6, 6]   // dashed
+              : undefined; // solid
+          }
+        }
       }
     });
 
@@ -128,7 +155,7 @@ export class Standings {
       type: 'line',
       data: {
         labels,
-        datasets
+        datasets,
       },
       options: {
         responsive: true,
@@ -175,30 +202,39 @@ export class Standings {
   private getStatValue(squad: Squad): number {
     switch (this.selectedStat) {
       case 'gwPoints':
+        this.showProjectionsBox = false;
         this.showCumulative = true
         return squad.points;
       case 'totalPoints':
+        this.showProjectionsBox = true;
         this.showCumulative = false
         return squad.total_points;
       case 'squadValue':
+        this.showProjectionsBox = false;
         this.showCumulative = false
         return squad.value/10;
       case 'pointsOnBench':
+        this.showProjectionsBox = false;
         this.showCumulative = true
         return squad.points_on_bench;
       case 'rank':
+        this.showProjectionsBox = false;
         this.showCumulative = false
         return squad.rank;
       case 'goalsScored':
+        this.showProjectionsBox = false;
         this.showCumulative = true
         return squad.goals_scored;
       case 'assists':
+        this.showProjectionsBox = false;
         this.showCumulative = true
         return squad.assists;
       case 'cleanSheets':
+        this.showProjectionsBox = false;
         this.showCumulative = true
         return squad.clean_sheets;
       case 'saves':
+        this.showProjectionsBox = false;
         this.showCumulative = true
         return squad.saves;
       default:

@@ -19,6 +19,11 @@ export interface StandingEntryDto {
   total: number;
 }
 
+export interface EntryDto {
+  id: number;
+  started_event: number;
+}
+
 export interface GwPicksDto {
   entry_history: EntryHistoryDTO;
   picks: PicksDto[];

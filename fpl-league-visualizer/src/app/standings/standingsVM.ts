@@ -9,6 +9,7 @@ export class Team{
     rank: number = 0;
     entry_name: string = "";
     player_name: string = "";
+    started_event: number = 1;
     event_total: number = 0;
     total: number = 0;
     squad_by_gw: Squad[] = [];

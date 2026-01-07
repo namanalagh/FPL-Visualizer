@@ -66,6 +66,7 @@
       <th>Manager</th>
       <th>GW</th>
       <th>Points</th>
+      <th>Points/GW</th>
       <th>Delta</th>
       <th>Points on Bench</th>
       <th>Squad Value</th>
@@ -79,6 +80,7 @@
       <td>{{ player.player_name }}</td>
       <td>{{ player.event_total }}</td>
       <td>{{ player.total }}</td>
+      <td>{{ player.total/(currentGw.id - player.started_event + 1) | number:`1.0-0`}}</td>
       <td>{{ player.points_behind_leader*-1 }}</td>
       <td>{{ player.squad_by_gw[currentGw.id].points_on_bench }}</td>
       <td>{{ player.squad_by_gw[currentGw.id].value/10 }} M</td>
@@ -116,6 +118,16 @@
     </select>
   </label>
   <div class="chart-params-gw">
+    <div class="chart-params-gw-projections">
+      <label *ngIf = "standings && showProjectionsBox">
+        Show Projections
+        <input 
+          type="checkbox" 
+          id="projections" 
+          [(ngModel)]="projections" 
+          (ngModelChange)="onProjectionsChange($event)">
+      </label>
+    </div>
     <div class="chart-params-gw-cumulative">
       <label *ngIf = "standings && showCumulative">
         Cumulative
@@ -125,7 +137,6 @@
           [(ngModel)]="cumulative" 
           (change)="renderChart(chartStartGw, chartEndGw)">
       </label>
-      <!-- <span class="white-separator">|</span> -->
     </div>
     <label>From GW: </label>
     <input

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { GwPicksDto, StandingsDto } from './standings/standingsDTO';
+import { EntryDto, GwPicksDto, StandingsDto } from './standings/standingsDTO';
 import { Squad, SquadPlayer, StandingsVM, Team } from './standings/standingsVM';
 import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { PlayersService } from './players-service';
@@ -24,11 +24,17 @@ export class StandingsService {
     ));
   }
 
-  getTeamPicks(playerId: number, gw: number) {
+  getLeagueEntry(userId: number){
+    // return this.http.get<EntryDto>(`https://localhost:7043/api/entry/${userId}`)
+    return this.http.get<EntryDto>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/entry/${userId}`)
+      .pipe()
+  }
+
+  getTeamPicks(userId: number, gw: number) {
     return this.http
-      .get<GwPicksDto>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/entry/${playerId}/event/${gw}/picks/`)
+      .get<GwPicksDto>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/entry/${userId}/event/${gw}/picks/`)
       .pipe(
-        tap(res => console.log('GW PICKS RAW', playerId, gw, res)),
+       // tap(res => console.log('GW PICKS RAW', userId, gw, res)),
         map(dto => this.mapToSquad(dto, gw)),
         // tap(squad => console.log('MAPPED SQUAD', squad)),
         catchError(() => {
@@ -38,6 +44,36 @@ export class StandingsService {
           return of(squad);
         })
       );
+  }
+
+  private loadEntries(teams: Team[]){
+    const requests = teams.map(team =>
+      this.getLeagueEntry(team.id).pipe(
+        map((res: EntryDto) => ({
+          id: res.id,
+          started_event: res.started_event ?? 1
+        })),
+        catchError(()=> of({
+          id: team.id,
+          started_event: 1
+        }))
+      )
+    )
+
+    return forkJoin(requests);
+  }
+
+  private applyEntries(teams: Team[], entries: EntryDto[]){
+    const map = new Map(
+      entries.map(e=> [e.id, e.started_event])
+    )
+
+    teams.forEach(team => {
+      const started = map.get(team.id);
+      if (started !== undefined) {
+        team.started_event = started;
+      }
+    });
   }
 
   private mapToSquad(dto: GwPicksDto, gw: number) {
@@ -130,6 +166,10 @@ export class StandingsService {
         vm.teams = vm.teams.slice(0, 25);
         return vm;
       }),
+      switchMap(vm => this.loadEntries(vm.teams).pipe(
+        tap(entries => this.applyEntries(vm.teams, entries)),
+        map(() => vm)
+      )),
       switchMap(vm => this.attachTeamPicks(vm, gw).pipe(
         map(() =>  {
           this.calculateLeagueRanks(vm, gw);
