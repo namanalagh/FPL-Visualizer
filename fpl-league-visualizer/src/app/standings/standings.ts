@@ -1,6 +1,5 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, NgZone, ViewChild } from '@angular/core';
 import { StandingsService } from '../standings-service';
-import { StandingEntryDto, StandingsDto } from './standingsDTO';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { Squad, StandingsVM, Team } from './standingsVM';
@@ -9,7 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { PlayersService } from '../players-service';
 import { EventsDto, StaticDataDto } from '../StaticDataDTO';
 import { FavouriteLeague, FavouritesService } from '../favourites-service';
-import { from } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-standings',
@@ -33,7 +33,14 @@ export class Standings {
   leagueIdInput: number | null = null;
   loading = false;
   error = '';
-  currentGw!: EventsDto;
+  currentGw!: EventsDto 
+  // = {
+  //   id: 38,
+  //   name: 'PlaceHolderGw',
+  //   average_entry_score: 0,
+  //   highest_score: 0,
+  //   is_current: true
+  // }
   projections = false
   _chartStartGw = 1;
   _chartEndGw = this.projections ? 38 : this.currentGw?.id ?? 38
@@ -47,6 +54,7 @@ export class Standings {
     this._showProjectionsBox = value;
 
     if (!value) {
+      this.chartStartGw = 0;
       this.chartEndGw = this.currentGw.id;
       console.log("Set chartEndGw to", this._chartEndGw);
     }
@@ -113,11 +121,19 @@ export class Standings {
     return this.totalValue/this.results.length/10
   }
 
-  constructor(private standingsService: StandingsService, private playersService: PlayersService, private favouritesService: FavouritesService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private standingsService: StandingsService, 
+    private playersService: PlayersService, 
+    private favouritesService: FavouritesService, 
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private router: Router,
+    private zone: NgZone
+  ) {}
   
   onProjectionsChange(checked: boolean) {
     const maxGw = checked && this.showProjectionsBox ? 38 : this.currentGw.id;
-
+    this.chartStartGw = Math.min(this.chartStartGw, this.currentGw.id-1)
     this.chartEndGw = maxGw;
     this.renderChart(this.chartStartGw, this.chartEndGw);
   }
@@ -216,6 +232,7 @@ export class Standings {
     
     this.gwAvg /= this.results.length;
     this.renderChart(this.chartStartGw, this.chartEndGw);
+    // this.cdr.detectChanges();
   }
 
   getStatValue(squad: Squad): number {
@@ -322,32 +339,67 @@ export class Standings {
     this.loadLeague();
   }
 
+  private fetchLeague(leagueId: number) {
+    this.loading = true;
+    this.cdr.detectChanges();
+    this.error = '';
+    console.log("Fetching league", leagueId)
+
+    this.standingsService
+      .getLeagueStandingsWithPicks(leagueId, this.currentGw.id)
+        .pipe(
+          finalize(() => {
+            this.zone.run(() => this.loading = false);
+          })
+        )
+      .subscribe({
+        next: vm => {
+          this.standings = vm;
+          this.results = [...vm.teams];
+          this.calculateStats();
+          this.zone.run(() => this.loading = false);
+          this.cdr.detectChanges();
+        },
+        error: err => {
+          console.error(err);
+          this.error = 'Failed to load league data';
+          // this.loading = false;
+        }
+      
+      });
+  }
+
   loadLeague(){
     if (!this.leagueIdInput || this.leagueIdInput <= 0) {
       return;
     }
 
-    this.loading = true;
-    this.error = '';
-    this.standingsService.getLeagueStandingsWithPicks(this.leagueIdInput, this.currentGw.id).subscribe(vm => {
-      this.standings = vm;
-      this.results = [...this.standings.teams];
-      this.calculateStats();
-      this.cdr.detectChanges();  
-      // console.log(vm);
-    });
-
-    
+    this.router.navigate(['/league', this.leagueIdInput]);
   }
   
   ngOnInit() {
     this.favourites = this.favouritesService.getAll();
-    this.playersService.getStaticData().subscribe(data => {
-      this.staticData = data
-      this.currentGw = this.staticData.events.find(gw => gw.is_current)!
-      this.chartEndGw = this.currentGw?.id ?? 38
+    this.playersService.getStaticData().subscribe({
+      next: data => {
+        this.staticData = data;
+        this.currentGw = data.events?.find(gw => gw.is_current)!;
+        this.chartEndGw = this.currentGw?.id ?? 38;
+
+        this.route.paramMap.subscribe(params => {
+        const leagueId = Number(params.get('leagueId'));
+        
+        if (leagueId) {
+          this.leagueIdInput = leagueId;
+          this.fetchLeague(leagueId);
+        }
+      });
+      },
+      error: err => {
+        console.error(err);
+      }
     });
   }
+
 }
 
 export type StatOption = 

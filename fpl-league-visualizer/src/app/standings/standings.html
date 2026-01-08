@@ -46,7 +46,9 @@
 
   </div>
 </div>
-
+<div class="loading-overlay" *ngIf="loading">
+  Loading league…
+</div>
 <div class="site-info" *ngIf="!standings">
   <h4>To find your League ID, view your league at <a
       href="https://fantasy.premierleague.com/"
