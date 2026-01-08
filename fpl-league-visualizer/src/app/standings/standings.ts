@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { PlayersService } from '../players-service';
 import { EventsDto, StaticDataDto } from '../StaticDataDTO';
 import { FavouriteLeague, FavouritesService } from '../favourites-service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-standings',
@@ -21,6 +22,7 @@ export class Standings {
   standings!: StandingsVM;
   results: Team[] = [];
   selectedStat: StatOption = 'totalPoints';
+  selectedProjectionStat: ProjectionStatOption = 'teamForm';
   showStatPopup = false;
   staticData!: StaticDataDto
   @ViewChild('leagueChart') leagueChart!: ElementRef<HTMLCanvasElement>;
@@ -37,10 +39,26 @@ export class Standings {
   _chartEndGw = this.projections ? 38 : this.currentGw?.id ?? 38
   cumulative = false
   showCumulative = false
-  showProjectionsBox = false
+  _showProjectionsBox = false
   showFavourites = false
   favourites!: FavouriteLeague[]
 
+  set showProjectionsBox(value: boolean) {
+    this._showProjectionsBox = value;
+
+    if (!value) {
+      this.chartEndGw = this.currentGw.id;
+      console.log("Set chartEndGw to", this._chartEndGw);
+    }
+    else{
+      this.chartEndGw = 38;
+    }
+  }
+
+  get showProjectionsBox(): boolean {
+    return this._showProjectionsBox;
+  }
+  
   get chartStartGw(): number{
     return this._chartStartGw;
   }
@@ -65,10 +83,11 @@ export class Standings {
     if (isNaN(value)) return;
 
     // clamp
-    value = Math.min(this.projections ? 38 : this.currentGw.id, value);
+    value = Math.min((this.projections && this.showProjectionsBox ? 38 : this.currentGw.id), value);
     value = Math.max(value, this._chartStartGw+1);
 
     this._chartEndGw = value;
+    // this.renderChart(this.chartStartGw, this.chartEndGw)
   }
   get isFavourite(): boolean {
     return !!this.standings && this.favouritesService.isFavourite(this.standings.leagueId);
@@ -97,13 +116,17 @@ export class Standings {
   constructor(private standingsService: StandingsService, private playersService: PlayersService, private favouritesService: FavouritesService, private cdr: ChangeDetectorRef) {}
   
   onProjectionsChange(checked: boolean) {
-    const maxGw = checked ? 38 : this.currentGw.id;
+    const maxGw = checked && this.showProjectionsBox ? 38 : this.currentGw.id;
 
     this.chartEndGw = maxGw;
     this.renderChart(this.chartStartGw, this.chartEndGw);
   }
 
   renderChart(fromGw: number = 1, uptoGw: number = 38) {
+    console.log("renderChart", this._chartEndGw);
+    if(!this.showProjectionsBox) {
+      uptoGw = Math.min(uptoGw, this.currentGw.id);
+    }
     if (!this.leagueChart) return;
     const top10Teams = this.standings.teams.slice(0, 10);
     const dashFromIndex = this.currentGw.id-fromGw; 
@@ -122,12 +145,8 @@ export class Standings {
         return acc;
       }, []) : values;
 
-      if(this.projections && this.currentGw.id < 38){
-        let t = team.total;
-        for (let i: number = this.currentGw.id+1; i <= 38; i++) {
-          t += (team.total/(this.currentGw.id-team.started_event+1));
-          data[i-fromGw] = Math.trunc(t);
-        }
+      if(this.projections && this.showProjectionsBox && this.currentGw.id < 38){
+        this.createProjection(team, data, fromGw);
       }
 
       return {
@@ -199,7 +218,7 @@ export class Standings {
     this.renderChart(this.chartStartGw, this.chartEndGw);
   }
 
-  private getStatValue(squad: Squad): number {
+  getStatValue(squad: Squad): number {
     switch (this.selectedStat) {
       case 'gwPoints':
         this.showProjectionsBox = false;
@@ -239,6 +258,33 @@ export class Standings {
         return squad.saves;
       default:
         return 0;
+    }
+  }
+
+  private createProjection(team: Team, data: number[], fromGw: number){
+     
+    switch (this.selectedProjectionStat) {
+      case 'pointsPerGw':
+        var t = team.total, ppgw = (team.total/(this.currentGw.id-team.started_event+1));
+        for (let i: number = this.currentGw.id+1; i <= 38; i++) {
+          t += ppgw;
+          data[i-fromGw] = Math.trunc(t);
+        }
+
+        return
+      case 'teamForm':
+        var t = team.total, form = 0;
+        for (let i: number = 0; i <= 4; i++){
+          form += team.squad_by_gw[this.currentGw.id - i].points;
+        }
+        form /= 5;
+        for (let i: number = this.currentGw.id+1; i <= 38; i++) {
+          t += form;
+          data[i-fromGw] = Math.trunc(t);
+        }
+        return;
+      default:
+        return;
     }
   }
 
@@ -314,5 +360,11 @@ export type StatOption =
   | 'assists'
   | 'cleanSheets'
   | 'saves';
+
+export type ProjectionStatOption = 
+  | 'pointsPerGw'
+  | 'teamForm'
+  | 'squadForm'
+
 
   // OUR LEAGUE: 2246597

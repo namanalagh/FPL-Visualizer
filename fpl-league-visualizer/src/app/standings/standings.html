@@ -101,24 +101,24 @@
 </table>
 
 <div class="chart-params" *ngIf = "standings">
-  <label class="stat-label">
-    <select
-      [(ngModel)]="selectedStat"
-      (change)="renderChart(chartStartGw, chartEndGw)"
-    >
-      <option value="totalPoints">Total Points</option>
-      <option value="rank">League Standings</option>
-      <option value="gwPoints">GW Points</option>
-      <option value="squadValue">Squad Value</option>
-      <option value="pointsOnBench">Points on Bench</option>
-      <option value="goalsScored">Goals Scored</option>
-      <option value="assists">Assists</option>
-      <option value="cleanSheets">Clean Sheets</option>
-      <option value="saves">Saves</option>
-    </select>
-  </label>
-  <div class="chart-params-gw">
-    <div class="chart-params-gw-projections">
+  <div class="chart-params-left">
+    <label class="stat-label">
+      <select
+        [(ngModel)]="selectedStat"
+        (change)="getStatValue(standings.teams[0].squad_by_gw[0]); renderChart(chartStartGw, chartEndGw)"
+      >
+        <option value="totalPoints">Total Points</option>
+        <option value="rank">League Standings</option>
+        <option value="gwPoints">GW Points</option>
+        <option value="squadValue">Squad Value</option>
+        <option value="pointsOnBench">Points on Bench</option>
+        <option value="goalsScored">Goals Scored</option>
+        <option value="assists">Assists</option>
+        <option value="cleanSheets">Clean Sheets</option>
+        <option value="saves">Saves</option>
+      </select>
+    </label>
+    <div class="chart-params-projections">
       <label *ngIf = "standings && showProjectionsBox">
         Show Projections
         <input 
@@ -127,7 +127,18 @@
           [(ngModel)]="projections" 
           (ngModelChange)="onProjectionsChange($event)">
       </label>
+      <label class="stat-label" *ngIf="showProjectionsBox && projections">
+        <select
+          [(ngModel)]="selectedProjectionStat"
+          (change)="renderChart(chartStartGw, chartEndGw)"
+        >
+          <option value="pointsPerGw">Points per GW</option>
+          <option value="teamForm">Team Form</option>
+        </select>
+      </label>
     </div>
+  </div>
+  <div class="chart-params-gw">
     <div class="chart-params-gw-cumulative">
       <label *ngIf = "standings && showCumulative">
         Cumulative
