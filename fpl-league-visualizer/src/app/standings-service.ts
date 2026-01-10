@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { EntryDto, GwPicksDto, StandingsDto } from './standings/standingsDTO';
+import { ChipType, EntryDto, GwPicksDto, StandingsDto } from './standings/standingsDTO';
 import { Squad, SquadPlayer, StandingsVM, Team } from './standings/standingsVM';
 import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { PlayersService } from './players-service';
@@ -32,11 +32,10 @@ export class StandingsService {
 
   getTeamPicks(userId: number, gw: number) {
     return this.http
-      .get<GwPicksDto>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/entry/${userId}/event/${gw}/picks/`)
+      .get<any>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/entry/${userId}/event/${gw}/picks/`)
       .pipe(
-       // tap(res => console.log('GW PICKS RAW', userId, gw, res)),
-        map(dto => this.mapToSquad(dto, gw)),
-        // tap(squad => console.log('MAPPED SQUAD', squad)),
+        map(raw => this.mapGwPicks(raw, gw)),
+        
         catchError(() => {
           const squad = new Squad();
           squad.gw = gw; // set the current gameweek
@@ -46,6 +45,29 @@ export class StandingsService {
       );
   }
 
+  mapGwPicks(json: any, gw: number){
+    const dto: GwPicksDto = {
+      active_chip: this.mapChip(json.active_chip),
+      entry_history: json.entry_history,
+      picks: json.picks
+    }
+
+     return this.mapToSquad(dto, gw);
+  }
+
+  private mapChip(chip: any): ChipType {
+    if (chip === null) return null;
+
+    switch (chip) {
+      case 'bboost':
+      case '3xc':
+      case 'wildcard':
+      case 'freehit':
+        return chip;
+      default:
+        return null; // safety
+    }
+  }
   private loadEntries(teams: Team[]){
     const requests = teams.map(team =>
       this.getLeagueEntry(team.id).pipe(
@@ -83,6 +105,7 @@ export class StandingsService {
     squad.points = dto.entry_history.points ?? 0;
     squad.total_points = dto.entry_history.total_points ?? 0;
     squad.rank = dto.entry_history.rank ?? 0;
+    squad.active_chip = dto.active_chip ?? null;
     squad.bank = dto.entry_history.bank ?? 0;
     squad.value = dto.entry_history.value ?? 1000;
     squad.points_on_bench = dto.entry_history.points_on_bench ?? 0;
@@ -217,8 +240,15 @@ export class StandingsService {
             total: team.squad_by_gw[gw]?.total_points ?? 0
           }));
 
+          const weeklyScores = vm.teams.map(team => ({
+            team,
+            total: team.squad_by_gw[gw]?.points ?? 0
+          }));
+
           // sort descending
           scores.sort((a, b) => b.total - a.total);
+          weeklyScores.sort((a, b) => b.total - a.total);
+
 
           // assign ranks (handles ties)
           let rank = 1;
@@ -230,6 +260,17 @@ export class StandingsService {
             }
 
             item.team.squad_by_gw[gw].rank = rank;
+            prevTotal = item.total;
+          });
+          
+          rank = 1
+          prevTotal = null
+          weeklyScores.forEach((item, index) => {
+            if (prevTotal !== null && item.total < prevTotal) {
+                rank = index + 1;
+            }
+
+            item.team.squad_by_gw[gw].weekly_rank = rank;
             prevTotal = item.total;
           });
       }

@@ -1,3 +1,5 @@
+import { ChipType } from "./standingsDTO";
+
 export class StandingsVM{
     leagueId = 0;
     leagueName = '';
@@ -34,6 +36,8 @@ export class Squad{
     total_points: number = 0;
     squad_players: SquadPlayer[] = [];
     rank: number = 0;
+    weekly_rank: number = 0;
+    active_chip: ChipType = null;
     bank: number = 0;
     value: number = 100;
     points_on_bench: number = 0;

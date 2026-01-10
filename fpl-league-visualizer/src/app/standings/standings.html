@@ -63,29 +63,43 @@
 <table class="standings-table" *ngIf="standings">
   <thead>
     <tr>
-      <th>Rank</th>
+      <th class="small-col">Rank</th>
       <th>Team</th>
       <th>Manager</th>
-      <th>GW</th>
-      <th>Points</th>
-      <th>Points/GW</th>
-      <th>Delta</th>
-      <th>Points on Bench</th>
-      <th>Squad Value</th>
+      <th class="medium-col">GW</th>
+      <th class="medium-col">Points</th>
+      <th class="medium-col">Points/GW</th>
+      <th class="medium-col">Delta</th>
+      <th class="medium-col">Points on Bench</th>
+      <th class="medium-col">Squad Value</th>
     </tr>
   </thead>
 
   <tbody>
     <tr *ngFor="let player of results">
-      <td>{{ player.rank }}</td>
+      <td class="small-col">{{ player.rank }}</td>
       <td>{{ player.entry_name}}</td>
       <td>{{ player.player_name }}</td>
-      <td>{{ player.event_total }}</td>
-      <td>{{ player.total }}</td>
-      <td>{{ player.total/(currentGw.id - player.started_event + 1) | number:`1.0-0`}}</td>
-      <td>{{ player.points_behind_leader*-1 }}</td>
-      <td>{{ player.squad_by_gw[currentGw.id].points_on_bench }}</td>
-      <td>{{ player.squad_by_gw[currentGw.id].value/10 }} M</td>
+      <td class="chip-played-cell" *ngIf="standings.teams[player.rank-1].squad_by_gw[currentGw.id].active_chip != null; else normalPoints">
+        <div class="cell-top">
+          {{ player.event_total }}
+        </div>
+
+        <div class="cell-chip">
+          {{ getChip(standings.teams[player.rank-1].squad_by_gw[currentGw.id].active_chip) }}
+        </div>
+
+      </td>
+      <ng-template #normalPoints>
+        <td class="medium-col">
+          {{ player.event_total }}
+        </td>
+      </ng-template>
+      <td class="medium-col">{{ player.total }}</td>
+      <td class="medium-col">{{ player.total/(currentGw.id - player.started_event + 1) | number:`1.0-0`}}</td>
+      <td class="medium-col">{{ player.points_behind_leader*-1 }}</td>
+      <td class="medium-col">{{ player.squad_by_gw[currentGw.id].points_on_bench }}</td>
+      <td class="medium-col">{{ player.squad_by_gw[currentGw.id].value/10 }} M</td>
     </tr>
   </tbody>
 
@@ -111,6 +125,7 @@
       >
         <option value="totalPoints">Total Points</option>
         <option value="rank">League Standings</option>
+        <option value="weeklyRank">GW Standings</option>
         <option value="gwPoints">GW Points</option>
         <option value="squadValue">Squad Value</option>
         <option value="pointsOnBench">Points on Bench</option>

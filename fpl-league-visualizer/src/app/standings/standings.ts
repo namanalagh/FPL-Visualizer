@@ -10,6 +10,7 @@ import { EventsDto, StaticDataDto } from '../StaticDataDTO';
 import { FavouriteLeague, FavouritesService } from '../favourites-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { ChipType } from './standingsDTO';
 
 @Component({
   selector: 'app-standings',
@@ -54,7 +55,7 @@ export class Standings {
     this._showProjectionsBox = value;
 
     if (!value) {
-      this.chartStartGw = 0;
+      this.chartStartGw = Math.min(this.chartStartGw, this.currentGw.id-1);
       this.chartEndGw = this.currentGw.id;
       console.log("Set chartEndGw to", this._chartEndGw);
     }
@@ -151,7 +152,7 @@ export class Standings {
       { length: uptoGw - fromGw + 1 },
       (_, i) => `GW ${i + fromGw}`
     );
-
+  
     const datasets = top10Teams.map(team => {
 
       const values = team.squad_by_gw.slice(fromGw, uptoGw + 1).map(s => this.getStatValue(s))
@@ -184,42 +185,45 @@ export class Standings {
 
     // console.log(datasets)
 
-    this.chart?.destroy();
+    this.zone.runOutsideAngular(() => {
 
-    this.chart = new Chart(this.leagueChart.nativeElement, {
-      type: 'line',
-      data: {
-        labels,
-        datasets,
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: true }
+      this.chart?.destroy();
+  
+      this.chart = new Chart(this.leagueChart.nativeElement, {
+        type: 'line',
+        data: {
+          labels,
+          datasets,
         },
-        scales: {
-           x: {
-            type: 'category',
-            grid: {
-              display: false,
-              color: 'rgba(255, 255, 255, 0.2)',
-            }
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true }
           },
-          y: {
-            type: 'linear',
-            reverse: this.selectedStat == 'rank' ? true : false,
-            ticks: {
-              // callback: (value) => Number.isInteger(value) ? value : ''
-              precision: 0  
+          scales: {
+             x: {
+              type: 'category',
+              grid: {
+                display: false,
+                color: 'rgba(255, 255, 255, 0.2)',
+              }
             },
-            grid: {
-              display: true,
-              color: 'rgba(255, 255, 255, 0.2)',
+            y: {
+              type: 'linear',
+              reverse: this.selectedStat == 'rank' || this.selectedStat == 'weeklyRank' ? true : false,
+              ticks: {
+                // callback: (value) => Number.isInteger(value) ? value : ''
+                precision: 0  
+              },
+              grid: {
+                display: true,
+                color: 'rgba(255, 255, 255, 0.2)',
+              }
             }
           }
         }
-      }
-    });
+      });
+    })
   }
   
   calculateStats(){  
@@ -257,6 +261,10 @@ export class Standings {
         this.showProjectionsBox = false;
         this.showCumulative = false
         return squad.rank;
+      case 'weeklyRank':
+        this.showProjectionsBox = false;
+        this.showCumulative = false
+        return squad.weekly_rank;
       case 'goalsScored':
         this.showProjectionsBox = false;
         this.showCumulative = true
@@ -275,6 +283,21 @@ export class Standings {
         return squad.saves;
       default:
         return 0;
+    }
+  }
+
+  getChip(chip: ChipType): string {
+    switch (chip) {
+      case '3xc':
+        return 'Triple Captain'
+      case 'bboost':
+        return 'Bench Boost'
+      case 'freehit':
+        return 'Free Hit'
+      case 'wildcard':
+        return 'Wildcard'
+      default:
+        return ''
     }
   }
 
@@ -350,6 +373,7 @@ export class Standings {
         .pipe(
           finalize(() => {
             this.zone.run(() => this.loading = false);
+            this.cdr.detectChanges();
           })
         )
       .subscribe({
@@ -408,6 +432,7 @@ export type StatOption =
   | 'squadValue' 
   | 'pointsOnBench' 
   | 'rank' 
+  | 'weeklyRank'
   | 'goalsScored'
   | 'assists'
   | 'cleanSheets'

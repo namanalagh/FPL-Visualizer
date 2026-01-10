@@ -25,6 +25,7 @@ export interface EntryDto {
 }
 
 export interface GwPicksDto {
+  active_chip: ChipType
   entry_history: EntryHistoryDTO;
   picks: PicksDto[];
 }
@@ -47,3 +48,10 @@ export interface PicksDto {
   is_vice_captain: boolean;
   element_type: number;
 }
+
+export type ChipType =
+| null
+| 'bboost'
+| '3xc'
+| 'wildcard'
+| 'freehit'

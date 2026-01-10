@@ -22,7 +22,7 @@ h1, th, tfoot {
   overflow: hidden;
   width: 10%;
   border-collapse: collapse;
-  text-align: left;
+  text-align: center;
   table-layout: auto;
   text-overflow: ellipsis; 
   
@@ -30,11 +30,50 @@ h1, th, tfoot {
 .standings-table tbody tr td {
   color: #000000; 
 }
+ .chip-played-cell {
+  padding: 0 !important;
+  position: relative;
+  height: 100%;
+  width: 5% !important;
+}
+
+/*.chip-played-cell > div {
+
+  padding: 0 !important;
+  position: relative;   
+  overflow: hidden;
+}
+
+
+.cell-top {
+  height: 80%;
+
+} */
+
+.cell-chip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* height: 15px; */
+  background: #2979ff;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  /* padding-bottom: -100 !important; */
+}
+.small-col {
+  width: 1% !important;
+}
+.medium-col {
+  width: 5% !important;
+}
 .table-footer {
   background: var(--pl-purple);
   color: white;
   width: 100%;
-  text-align: right;
   font-weight: 600;
   padding: 10px;
 }
@@ -42,6 +81,7 @@ h1, th, tfoot {
   margin-left: 12px;
 }
 .table-footer td{
+  text-align: left !important;
   background: var(--pl-purple);
 }
 .separator {
