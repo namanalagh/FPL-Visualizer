@@ -27,7 +27,6 @@ export class StandingsService {
   getLeagueEntry(userId: number){
     // return this.http.get<EntryDto>(`https://localhost:7043/api/entry/${userId}`)
     return this.http.get<EntryDto>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/entry/${userId}`)
-      .pipe()
   }
 
   getTeamPicks(userId: number, gw: number) {
@@ -131,6 +130,9 @@ export class StandingsService {
     squad.saves = 0;
 
     for (const sp of squad.squad_players) {
+      if(sp.multiplier == 0){
+        continue;
+      }
       const stats = this.playersService.getPlayerGwStats(sp.element, squad.gw);
       if (!stats) continue;
 
@@ -205,7 +207,9 @@ export class StandingsService {
   private attachTeamPicks(vm: StandingsVM, maxGw: number) {
     const teamRequests = vm.teams.map(team => {
 
-      const gwRequests = Array.from({ length: maxGw }, (_, i) => i + 1).map(gw =>
+      const gwRequests = Array.from({ length: maxGw }, (_, i) => i + 1)
+      .filter(gw => gw >= team.started_event)
+      .map(gw => 
         this.getTeamPicks(team.id, gw).pipe(
 
           switchMap(squad =>

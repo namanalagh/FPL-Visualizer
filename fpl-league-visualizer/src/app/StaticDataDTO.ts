@@ -15,8 +15,9 @@ export interface PlayersCumulativeDto{
     id: number
     event_points: number
     first_name: string
-    points_per_game: string
     second_name: string
+    team: number;
+    points_per_game: string
     total_points: number
     value_form: number
     web_name: string

@@ -35,13 +35,6 @@ export class Standings {
   loading = false;
   error = '';
   currentGw!: EventsDto 
-  // = {
-  //   id: 38,
-  //   name: 'PlaceHolderGw',
-  //   average_entry_score: 0,
-  //   highest_score: 0,
-  //   is_current: true
-  // }
   projections = false
   _chartStartGw = 1;
   _chartEndGw = this.projections ? 38 : this.currentGw?.id ?? 38
@@ -233,6 +226,8 @@ export class Standings {
       this.totalValue += res.squad_by_gw[this.currentGw.id].value;
       this.gwAvg += res.event_total;
     });
+
+    
     
     this.gwAvg /= this.results.length;
     this.renderChart(this.chartStartGw, this.chartEndGw);
@@ -373,12 +368,15 @@ export class Standings {
         .pipe(
           finalize(() => {
             this.zone.run(() => this.loading = false);
+            this.standings.getTop10Owned(id => this.playersService.getPlayerInfo(id))
+            this.standings.getPlayerContributions(0, this.currentGw.id, (id, gw) => this.playersService.getPlayerGwStats(id, gw), id => this.playersService.getPlayerInfo(id));
             this.cdr.detectChanges();
           })
         )
       .subscribe({
         next: vm => {
           this.standings = vm;
+          this.standings.currentGw = this.currentGw.id;
           this.results = [...vm.teams];
           this.calculateStats();
           this.zone.run(() => this.loading = false);
@@ -407,7 +405,9 @@ export class Standings {
       next: data => {
         this.staticData = data;
         this.currentGw = data.events?.find(gw => gw.is_current)!;
+        
         this.chartEndGw = this.currentGw?.id ?? 38;
+        
 
         this.route.paramMap.subscribe(params => {
         const leagueId = Number(params.get('leagueId'));

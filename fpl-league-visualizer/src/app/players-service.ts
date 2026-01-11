@@ -7,6 +7,7 @@ import { finalize, map, Observable, of, shareReplay, tap } from 'rxjs';
   providedIn: 'root',
 })
 export class PlayersService {
+  private playerInfoCache = new Map<number, PlayersCumulativeDto>();
   private playerGwCache = new Map<number, Map<number, PlayerGwDto>>();
   private inFlightRequests = new Map<number, Observable<PlayerGwDto[]>>();
   private staticData!: StaticDataDto;
@@ -28,6 +29,10 @@ export class PlayersService {
 
   setStaticData(data: StaticDataDto) {
     this.staticData = data;
+
+    data.elements.forEach(player => {
+      this.playerInfoCache.set(player.id, player);
+    })
   }
 
   buildPlayerGwCache(playerId: number, gwStats: PlayerGwDto[]){
@@ -64,8 +69,11 @@ export class PlayersService {
   }
 
   getPlayerGwStats(playerId: number, gw: number) : PlayerGwDto | undefined {
-    console.log(this.playerGwCache.get(playerId)?.get(gw))
     return this.playerGwCache.get(playerId)?.get(gw);
+  }
+
+  getPlayerInfo(playerId: number) : PlayersCumulativeDto | undefined {
+    return this.playerInfoCache.get(playerId);
   }
 }
 
