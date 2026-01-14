@@ -37,6 +37,7 @@ export interface PlayersCumulativeDto{
     tackles: number
     defensive_contribution: number
     starts: number
+    element_type: number
 }
 
 export interface PlayerDTO {

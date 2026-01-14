@@ -12,6 +12,16 @@ h1, th, tfoot {
   --pl-pink: #ff2882;
   --pl-green: #00ff87;
 }
+
+.standings-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.standings-table {
+    min-width: 600px;
+}
+
 .standings-table thead {
   background: var(--pl-purple);
   color: white;
@@ -36,19 +46,6 @@ h1, th, tfoot {
   height: 100%;
   width: 5% !important;
 }
-
-/*.chip-played-cell > div {
-
-  padding: 0 !important;
-  position: relative;   
-  overflow: hidden;
-}
-
-
-.cell-top {
-  height: 80%;
-
-} */
 
 .cell-chip {
   position: absolute;
@@ -191,14 +188,18 @@ h1, th, tfoot {
 }
 
 .chart-wrapper {
-  /* width: 100%; */
-  /* height: 700px; */
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
-canvas {
+.chart-wrapper canvas {
   width: 100% !important;
-  height: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+  display: block;
 }
+
 .chart-params {
   display: flex;
   align-items: center;
@@ -255,7 +256,6 @@ canvas {
   font-weight: 600;
   font-size: 14px;
   padding-left: 20px;
-  
 }
 
 .stat-label select {
@@ -297,11 +297,13 @@ input[type=number] {
 }
 
 .mini-table-section{
-  display: flex;
+  /* display: flex;
+  justify-content: space-evenly; */
   background-color: var(--pl-purple);
-  /* gap: 30px; */
-  justify-content: space-evenly;
-  /* padding-left: 30px; */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 12px;
 }
 .mini-table-wrapper {
   display: inline-block;  
@@ -309,20 +311,42 @@ input[type=number] {
 
 /* Header */
 .mini-table-header {
-  margin: 0;                  /* remove default h3 gap */
+  margin: 0;                 
   padding: 12px 16px;
   /* background: var(--pl-purple); */
   color: white;
   text-align: center;
-  width: 100%;                /* same width as table */
+  width: 100%;                
   box-sizing: border-box;
 }
 
+.header-footnote{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+.header-footnote h3{
+  flex: 1;                
+  text-align: center;
+}
+
+.header-footnote span{
+  font-size: 10px;
+  white-space: nowrap;
+  color: white;
+  
+  flex-shrink: 1;
+  min-width: 0;
+  padding-left: 12px;
+}
+
+
+
 /* Table */
 .mini-table {
-  /* border-collapse: separate; */
   width: 100%;
-   /* border: 3px solid black;         */
 }
 
 /* Table header row */
@@ -357,4 +381,166 @@ input[type=number] {
   size: flex;
   width: 100%;
   height: 30px;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+
+@media (max-width: 768px) {
+  .tab-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  h3 {
+    font-size: 0.9rem;
+  }
+
+  .league-search {
+    max-width: 100%;
+    width: 100%;
+    padding-right: 0;
+    flex-direction: column;     /* stack input + button */
+    align-items: center;
+    gap: 8px;
+  }
+
+  .search-input-wrapper {
+    width: 100%;
+  }
+
+  .league-search input {
+    width: 100%;
+    height: 44px;               /* touch friendly */
+    font-size: 16px;            /* prevents mobile zoom */
+  }
+
+  .league-search button {
+    width: 75%;
+    height: 44px;
+    font-size: 16px;
+  }
+  
+  .star-btn{
+    width: 25% !important;
+  }
+
+  /* Prevent dropdown from going off-screen */
+  .favourites-dropdown {
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 50vh;           /* don’t cover whole phone */
+  }
+
+  .fav-item {
+    padding: 12px 14px;         /* better tap targets */
+    font-size: 16px;
+  }
+
+  /* GW title + stats should wrap nicely */
+  .gw-title {
+    font-size: 1.1rem;
+    white-space: normal;
+  }
+
+  .gw-stats {
+    font-size: 0.85rem;
+  }
+
+  table {
+    font-size: 0.8rem;   /* scales all td + th text */
+  }
+
+  th, tfoot {
+    font-size: 0.8rem;
+    white-space: nowrap; /* keep headers on one line */
+  }
+
+  td {
+    font-size: 0.8rem;
+    padding: 8px 10px;   /* tighter but still tappable */
+    white-space: nowrap; 
+  }
+
+  label {
+    font-size: 0.8rem;
+  }
+
+  .chart-wrapper {
+    margin-left: -8px;   /* removes side padding causing scroll */
+    margin-right: -8px;
+  }
+
+  .chart-wrapper canvas {
+    min-height: 600px;  /* readable but not huge */
+    max-height: 600px;
+  }
+
+  .chart-params {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .chart-params label {
+    font-size: 12px;
+  }
+
+  .chart-params-gw {
+    font-size: 12px;
+    padding-right: 2px;
+    gap: 6px;
+  }
+
+  .chart-params-gw input[type="number"] {
+    width: 44px;
+    font-size: 14px;
+    padding-left: 4px;
+  }
+
+  .chart-params label,
+  .chart-params .stat-label {
+    font-size: 10px !important;
+    line-height: 1.2;
+    font-weight: 500;
+    padding-left: 8px !important;
+  }
+
+  /* The dropdowns inside the labels */
+  .chart-params select {
+    font-size: 10px !important;
+    height: 28px;
+  }
+
+  /* Checkboxes + text alignment */
+  .chart-params input[type="checkbox"] {
+    transform: scale(0.9);
+  }
+
+  .mini-table td,
+  .mini-table th {
+    white-space: normal;     /* allow wrapping */
+    /* word-break: break-word; prevent overflow on long names */
+  }
+}
+
+button, .clickable {
+  min-height: 44px;
+  min-width: 44px;
 }

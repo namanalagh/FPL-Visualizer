@@ -60,61 +60,63 @@
     </a> and look for your League ID in the URL: leagues/<span class="green-text">your-league-id</span>/standings</h4>
 </div>
 
-<table class="standings-table" *ngIf="standings">
-  <thead>
-    <tr>
-      <th class="small-col">Rank</th>
-      <th>Team</th>
-      <th>Manager</th>
-      <th class="medium-col">GW</th>
-      <th class="medium-col">Points</th>
-      <th class="medium-col">Points/GW</th>
-      <th class="medium-col">Delta</th>
-      <th class="medium-col">Points on Bench</th>
-      <th class="medium-col">Squad Value</th>
-    </tr>
-  </thead>
+<div class="standings-table-wrapper">
+  <table class="standings-table" *ngIf="standings">
+    <thead>
+      <tr>
+        <th class="small-col">Rank</th>
+        <th>Team</th>
+        <th>Manager</th>
+        <th class="medium-col">GW</th>
+        <th class="medium-col">Points</th>
+        <th class="medium-col">Points/GW</th>
+        <th class="medium-col">Delta</th>
+        <th class="medium-col">Points on Bench</th>
+        <th class="medium-col">Squad Value</th>
+      </tr>
+    </thead>
 
-  <tbody>
-    <tr *ngFor="let player of results">
-      <td class="small-col">{{ player.rank }}</td>
-      <td>{{ player.entry_name}}</td>
-      <td>{{ player.player_name }}</td>
-      <td class="chip-played-cell" *ngIf="standings.teams[player.rank-1].squad_by_gw[currentGw.id].active_chip != null; else normalPoints">
-        <div class="cell-top">
-          {{ player.event_total }}
-        </div>
+    <tbody>
+      <tr *ngFor="let player of results">
+        <td class="small-col">{{ player.rank }}</td>
+        <td>{{ player.entry_name}}</td>
+        <td>{{ player.player_name }}</td>
+        <td class="chip-played-cell" *ngIf="standings.teams[player.rank-1].squad_by_gw[currentGw.id].active_chip != null; else normalPoints">
+          <div class="cell-top">
+            {{ player.event_total }}
+          </div>
 
-        <div class="cell-chip">
-          {{ getChip(standings.teams[player.rank-1].squad_by_gw[currentGw.id].active_chip) }}
-        </div>
+          <div class="cell-chip">
+            {{ getChip(standings.teams[player.rank-1].squad_by_gw[currentGw.id].active_chip) }}
+          </div>
 
-      </td>
-      <ng-template #normalPoints>
-        <td class="medium-col">
-          {{ player.event_total }}
         </td>
-      </ng-template>
-      <td class="medium-col">{{ player.total }}</td>
-      <td class="medium-col">{{ player.total/(currentGw.id - player.started_event + 1) | number:`1.0-0`}}</td>
-      <td class="medium-col">{{ player.points_behind_leader*-1 }}</td>
-      <td class="medium-col">{{ player.squad_by_gw[currentGw.id].points_on_bench }}</td>
-      <td class="medium-col">{{ player.squad_by_gw[currentGw.id].value/10 }} M</td>
-    </tr>
-  </tbody>
+        <ng-template #normalPoints>
+          <td class="medium-col">
+            {{ player.event_total }}
+          </td>
+        </ng-template>
+        <td class="medium-col">{{ player.total }}</td>
+        <td class="medium-col">{{ player.total/(currentGw.id - player.started_event + 1) | number:`1.0-0`}}</td>
+        <td class="medium-col">{{ player.points_behind_leader*-1 }}</td>
+        <td class="medium-col">{{ player.squad_by_gw[currentGw.id].points_on_bench }}</td>
+        <td class="medium-col">{{ player.squad_by_gw[currentGw.id].value/10 }} M</td>
+      </tr>
+    </tbody>
 
-  <tfoot>
-    <tr class="table-footer">
-      <td colspan="100%">
-        <span>Average Points: {{ avgPts | number:'1.0-0' }}</span>
-        <span class="separator">|</span>
-        <span>GW Average: {{ gwAvg | number:'1.0-0' }}</span>
-        <span class="separator">|</span>
-        <span>Average Value: {{ avgVal | number:'1.1-1' }} M</span>
-      </td>
-    </tr>
-  </tfoot>
-</table>
+    <tfoot>
+      <tr class="table-footer">
+        <td colspan="100%">
+          <span>Average Points: {{ avgPts | number:'1.0-0' }}</span>
+          <span class="separator">|</span>
+          <span>GW Average: {{ gwAvg | number:'1.0-0' }}</span>
+          <span class="separator">|</span>
+          <span>Average Value: {{ avgVal | number:'1.1-1' }} M</span>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
 
 <div class="chart-params" *ngIf = "standings">
   <div class="chart-params-left">
@@ -137,7 +139,7 @@
     </label>
     <div class="chart-params-projections">
       <label *ngIf = "standings && showProjectionsBox">
-        Show Projections
+        Projections
         <input 
           type="checkbox" 
           id="projections" 
@@ -278,7 +280,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let p of standings.topDefenders">
+          <tr *ngFor="let p of standings.topDefcons">
             <td>{{ p.web_name }}</td>
             <td>{{ p.fplTeamName }}</td>
             <td>{{ p.defensive_contribution }}</td>
@@ -290,4 +292,82 @@
   
 </div>
 
+<div class="section-separator" *ngIf="standings"></div>
 
+<div class="mini-table-section" *ngIf="standings">
+
+  <div class="mini-table-wrapper">
+    <h3 class="mini-table-header">Most Clean Sheets</h3>
+    <div class="mini-table-bg">
+      <table class="mini-table" *ngIf="standings">
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>Team</th>
+            <th>Clean Sheets</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let p of standings.topCleanSheets">
+            <td>{{ p.web_name }}</td>
+            <td>{{ p.fplTeamName }}</td>
+            <td>{{ p.clean_sheets }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mini-table-wrapper">
+    <h3 class="mini-table-header">Most Saves</h3>
+    <div class="mini-table-bg">
+      <table class="mini-table" *ngIf="standings">
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>Team</th>
+            <th>Saves</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let p of standings.topSaves">
+            <td>{{ p.web_name }}</td>
+            <td>{{ p.fplTeamName }}</td>
+            <td>{{ p.saves }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mini-table-wrapper">
+    <div class="header-footnote">
+      <h3 class="mini-table-header">Highest Returns*</h3>
+      <span>*min 10 starts</span>
+    </div>
+    <div class="mini-table-bg">
+      <table class="mini-table" *ngIf="standings">
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>Team</th>
+            <th>Pts/GW</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let p of standings.topPointsPerGw">
+            <td>{{ p.web_name }}</td>
+            <td>{{ p.fplTeamName }}</td>
+            <td>{{ p.points_per_game | number:`1.0-1`}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+</div>
+
+<div class="section-separator" *ngIf="standings"></div>

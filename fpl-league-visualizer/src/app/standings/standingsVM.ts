@@ -11,7 +11,11 @@ export class StandingsVM{
     topPointScorers: PlayerContribution[] = [];
     topGoalScorers: PlayerContribution[] = [];
     topAssistProviders: PlayerContribution[] = [];
-    topDefenders: PlayerContribution[] = [];
+    topCleanSheets: PlayerContribution[] = [];
+    topDefcons: PlayerContribution[] = [];
+    topSaves: PlayerContribution[] = [];
+    topStarts: PlayerContribution[] = [];
+    topPointsPerGw: PlayerContribution[] = [];
 
     get allSquads(): Squad[] {
         return this.teams.flatMap(t => t.squad_by_gw);
@@ -90,11 +94,12 @@ export class StandingsVM{
                     if (!entry) {
                         entry = {
                             element: sp.element,
+                            element_type: 0,
                             fplTeamId: team.id,
                             fplTeamName: team.entry_name,
                             web_name: player?.web_name ?? 'Unknown',
                             total_points: 0,
-                            points_per_game: '0',
+                            points_per_game: 0,
                             goals_scored: 0,
                             assists: 0,
                             clean_sheets: 0,
@@ -118,6 +123,7 @@ export class StandingsVM{
                     const m = sp.multiplier;
 
                     entry.starts++;
+                    entry.element_type = player?.element_type ?? 0;
                     entry.total_points += (gwStats as any).total_points * m; 
                     entry.goals_scored += gwStats.goals_scored * m;
                     entry.assists += gwStats.assists * m;
@@ -139,7 +145,7 @@ export class StandingsVM{
         }
 
         for (const e of map.values()) {
-            e.points_per_game = (e.total_points / Math.max(1, e.starts)).toFixed(2);
+            e.points_per_game = (e.total_points / Math.max(1, e.starts));
         }
 
         const all = Array.from(map.values());
@@ -157,9 +163,27 @@ export class StandingsVM{
         .sort((a,b) => b.assists - a.assists)
         .slice(0,10); 
 
-        this.topDefenders = [...all]
+        this.topDefcons = [...all]
         .sort((a,b) => b.defensive_contribution - a.defensive_contribution)
         .slice(0,10); 
+
+        this.topCleanSheets = [...all]
+        .filter(a => a.element_type < 3)
+        .sort((a,b) => b.clean_sheets - a.clean_sheets)
+        .slice(0,10); 
+
+        this.topSaves = [...all]
+        .sort((a,b) => b.saves - a.saves)
+        .slice(0,10);
+        
+        this.topStarts = [...all]
+        .sort((a,b) => b.starts - a.starts)
+        .slice(0,10);
+
+        this.topPointsPerGw = [...all]
+        .sort((a,b) => b.points_per_game - a.points_per_game)
+        .filter(a => a.starts > 9)
+        .slice(0,10);
 
         // console.table(
         //     this.topDefenders.slice(0, 20).map(p => ({
@@ -229,9 +253,10 @@ export interface PlayerOwnership {
 
 export interface PlayerContribution { // stats for a player based on their contributions to a particular fpl team
     element: number
+    element_type: number
     fplTeamId: number
     fplTeamName: string
-    points_per_game: string
+    points_per_game: number
     total_points: number
     web_name: string
     goals_scored: number
