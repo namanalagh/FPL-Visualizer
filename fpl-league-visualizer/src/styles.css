@@ -15,7 +15,7 @@ h1, th, tfoot {
 
 .standings-table-wrapper {
   width: 100%;
-  overflow-x: auto;
+  /* overflow-x: auto; */
 }
 
 .standings-table {
@@ -111,6 +111,13 @@ h1, th, tfoot {
   background-color: var(--pl-purple);
   justify-content: center;   
 }
+.error{
+  color: white;
+  display: flex;
+  align-items: center;
+  background-color: red;
+  justify-content: center;   
+}
 .green-text {
   color: var(--pl-green);
 }
@@ -133,7 +140,7 @@ h1, th, tfoot {
   min-width: 0;
 }
 .league-search input {
-  height: 35px;
+  height: 44px;
   font-size: 18px;
   width: 100%;
   min-width: 0;
@@ -147,7 +154,7 @@ h1, th, tfoot {
 .league-search button{
   background-color: var(--pl-pink);
   font-size: 18px;
-  height: 40px;
+  height: 44px;
 }
 .favourites-dropdown {
   position: absolute;
@@ -297,16 +304,16 @@ input[type=number] {
 }
 
 .mini-table-section{
-  /* display: flex;
-  justify-content: space-evenly; */
+  justify-content: center;
   background-color: var(--pl-purple);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  gap: 30px;
   padding: 12px;
 }
 .mini-table-wrapper {
   display: inline-block;  
+  max-width: 500px;
 }
 
 /* Header */
@@ -412,13 +419,18 @@ html, body {
     font-size: 0.9rem;
   }
 
+  h4 {
+    font-size: 0.8rem;
+  }
+
   .league-search {
     max-width: 100%;
     width: 100%;
     padding-right: 0;
-    flex-direction: column;     /* stack input + button */
+    flex-direction: column;     
     align-items: center;
     gap: 8px;
+  
   }
 
   .search-input-wrapper {
@@ -427,8 +439,8 @@ html, body {
 
   .league-search input {
     width: 100%;
-    height: 44px;               /* touch friendly */
-    font-size: 16px;            /* prevents mobile zoom */
+    height: 44px;             
+    font-size: 16px;            
   }
 
   .league-search button {
@@ -441,20 +453,18 @@ html, body {
     width: 25% !important;
   }
 
-  /* Prevent dropdown from going off-screen */
   .favourites-dropdown {
     left: 0;
     right: 0;
     width: 100%;
-    max-height: 50vh;           /* don’t cover whole phone */
+    max-height: 50vh;          
   }
 
   .fav-item {
-    padding: 12px 14px;         /* better tap targets */
+    padding: 12px 14px;        
     font-size: 16px;
   }
 
-  /* GW title + stats should wrap nicely */
   .gw-title {
     font-size: 1.1rem;
     white-space: normal;
@@ -464,18 +474,49 @@ html, body {
     font-size: 0.85rem;
   }
 
+
+  .error {
+    font-size: 0.7rem;
+  }
+
+  .standings-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .table-footer {
+    font-size: 0.7rem;
+  }
+
+  /* .standings-table th:nth-child(1),
+  .standings-table td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    background-color: #00ff87;
+  }
+
+  .standings-table th:nth-child(2),
+  .standings-table td:nth-child(2) {
+    position: sticky;
+    left: px; 
+    z-index: 5;
+    background-color: #00ff87;
+  } 
+}*/
+
   table {
-    font-size: 0.8rem;   /* scales all td + th text */
+    font-size: 0.8rem;  
   }
 
   th, tfoot {
     font-size: 0.8rem;
-    white-space: nowrap; /* keep headers on one line */
+    white-space: nowrap; 
   }
 
   td {
     font-size: 0.8rem;
-    padding: 8px 10px;   /* tighter but still tappable */
+    padding: 8px 10px;   
     white-space: nowrap; 
   }
 
@@ -484,13 +525,13 @@ html, body {
   }
 
   .chart-wrapper {
-    margin-left: -8px;   /* removes side padding causing scroll */
+    margin-left: -8px;  
     margin-right: -8px;
   }
 
   .chart-wrapper canvas {
-    min-height: 600px;  /* readable but not huge */
-    max-height: 600px;
+    min-height: 400px;  
+    max-height: 400px;
   }
 
   .chart-params {
@@ -522,21 +563,19 @@ html, body {
     padding-left: 8px !important;
   }
 
-  /* The dropdowns inside the labels */
   .chart-params select {
     font-size: 10px !important;
     height: 28px;
   }
 
-  /* Checkboxes + text alignment */
   .chart-params input[type="checkbox"] {
     transform: scale(0.9);
   }
 
   .mini-table td,
   .mini-table th {
-    white-space: normal;     /* allow wrapping */
-    /* word-break: break-word; prevent overflow on long names */
+    white-space: normal;     
+    
   }
 }
 

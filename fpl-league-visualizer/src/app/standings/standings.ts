@@ -164,13 +164,13 @@ export class Standings {
         data: data,
         pointStyle: 'circle',
         tension: 0.25,
-        pointRadius: 3,
+        pointRadius: window.innerWidth < 600 ? this.projections ? 1 : 2 : 3,
+        borderWidth: window.innerWidth < 600 ? 2 : 3,
         segment: {
-          borderDash: (ctx: ScriptableLineSegmentContext) => {
-            // ctx.p0DataIndex = starting point of the segment
+          borderDash: (ctx: ScriptableLineSegmentContext) => {    
             return ctx.p0DataIndex >= dashFromIndex
-              ? [6, 6]   // dashed
-              : undefined; // solid
+              ?  window.innerWidth < 600 ? [3,1] : [6, 6]   
+              : undefined; 
           }
         }
       }
@@ -179,7 +179,7 @@ export class Standings {
     // console.log(datasets)
 
     this.zone.runOutsideAngular(() => {
-
+      const isMobile = window.innerWidth < 600;
       this.chart?.destroy();
   
       this.chart = new Chart(this.leagueChart.nativeElement, {
@@ -192,7 +192,14 @@ export class Standings {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: true }
+            legend: { display: true,
+              labels: {
+                boxWidth: isMobile ? 10 : 18,
+                font: {
+                  size: isMobile ? 10 : 12
+                }
+              }
+             }
           },
           scales: {
              x: {
@@ -200,13 +207,24 @@ export class Standings {
               grid: {
                 display: false,
                 color: 'rgba(255, 255, 255, 0.2)',
+              },
+              ticks: {
+                maxRotation: 0,
+                autoSkip: true,
+                maxTicksLimit: isMobile ? 5 : 10,
+                font: {
+                  size: isMobile ? 10 : 12
+                }
               }
             },
             y: {
               type: 'linear',
               reverse: this.selectedStat == 'rank' || this.selectedStat == 'weeklyRank' ? true : false,
               ticks: {
-                // callback: (value) => Number.isInteger(value) ? value : ''
+                padding: 6,
+                font: {
+                  size: window.innerWidth < 600 ? 10 : 12
+                },
                 precision: 0  
               },
               grid: {
@@ -283,15 +301,16 @@ export class Standings {
   }
 
   getChip(chip: ChipType): string {
+    const isMobile = window.innerWidth < 600;
     switch (chip) {
       case '3xc':
-        return 'Triple Captain'
+        return isMobile ? 'TC' : 'Triple Captain';
       case 'bboost':
-        return 'Bench Boost'
+        return isMobile ? 'BB' : 'Bench Boost';
       case 'freehit':
-        return 'Free Hit'
+        return isMobile ? 'FH' : 'Free Hit';
       case 'wildcard':
-        return 'Wildcard'
+        return isMobile ? 'WC' : 'Wildcard';
       default:
         return ''
     }
