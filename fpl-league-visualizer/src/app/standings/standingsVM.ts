@@ -226,7 +226,7 @@ export class Squad{
     weekly_rank: number = 0;
     active_chip: ChipType = null;
     bank: number = 0;
-    value: number = 100;
+    value: number = 1000;
     points_on_bench: number = 0;
     goals_scored: number = 0;
     assists: number = 0

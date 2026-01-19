@@ -117,6 +117,7 @@ h1, th, tfoot {
   align-items: center;
   background-color: red;
   justify-content: center;   
+  height: 30px;
 }
 .green-text {
   color: var(--pl-green);

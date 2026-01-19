@@ -266,7 +266,7 @@ export class Standings {
       case 'squadValue':
         this.showProjectionsBox = false;
         this.showCumulative = false
-        return squad.value/10;
+        return (squad.value - squad.bank)/10;
       case 'pointsOnBench':
         this.showProjectionsBox = false;
         this.showCumulative = true
@@ -405,7 +405,8 @@ export class Standings {
         error: err => {
           console.error(err);
           this.error = 'Failed to load league data';
-          // this.loading = false;
+          this.loading = false;
+          this.cdr.detectChanges();
         }
       
       });
