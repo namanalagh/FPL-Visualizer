@@ -122,81 +122,10 @@
   </table>
 </div>
 
-<div class="chart-params" *ngIf = "standings">
-  <div class="chart-params-left">
-    <label class="stat-label">
-      <select
-        [(ngModel)]="selectedStat"
-        (change)="getStatValue(standings.teams[0].squad_by_gw[0]); renderChart(chartStartGw, chartEndGw)"
-      >
-        <option value="totalPoints">Total Points</option>
-        <option value="rank">League Standings</option>
-        <option value="weeklyRank">GW Standings</option>
-        <option value="gwPoints">GW Points</option>
-        <option value="squadValue">Squad Value</option>
-        <option value="pointsOnBench">Points on Bench</option>
-        <option value="goalsScored">Goals Scored</option>
-        <option value="assists">Assists</option>
-        <option value="cleanSheets">Clean Sheets</option>
-        <option value="saves">Saves</option>
-      </select>
-    </label>
-    <div class="chart-params-projections">
-      <label *ngIf = "standings && showProjectionsBox">
-        Projections
-        <input 
-          type="checkbox" 
-          id="projections" 
-          [(ngModel)]="projections" 
-          (ngModelChange)="onProjectionsChange($event)">
-      </label>
-      <label class="stat-label" *ngIf="showProjectionsBox && projections">
-        <select
-          [(ngModel)]="selectedProjectionStat"
-          (change)="renderChart(chartStartGw, chartEndGw)"
-        >
-          <option value="pointsPerGw">Points per GW</option>
-          <option value="teamForm">Team Form</option>
-        </select>
-      </label>
-    </div>
-  </div>
-  <div class="chart-params-gw">
-    <div class="chart-params-gw-cumulative">
-      <label *ngIf = "standings && showCumulative">
-        Cumulative
-        <input 
-          type="checkbox" 
-          id="cumulative" 
-          [(ngModel)]="cumulative" 
-          (change)="renderChart(chartStartGw, chartEndGw)">
-      </label>
-    </div>
-    <label>From GW: </label>
-    <input
-       type="number"
-       min="1"
-      [max]="chartEndGw-1"
-       [(ngModel)]="chartStartGw"
-       
-       (keyup.enter)="renderChart(chartStartGw, chartEndGw)"
-     />
-     <label>To GW: </label>
-     <input
-       type="number"
-       [min]="chartStartGw"
-       [max]="currentGw.id"
-       [(ngModel)]="chartEndGw"
-       
-       (keyup.enter)="renderChart(chartStartGw, chartEndGw)"
-     />
-  </div>
-</div>
-
-<div class="chart-wrapper">
-  <canvas #leagueChart></canvas>
-</div>
-
+<app-graph
+[teams]="this.standings.teams"
+[currentGw]="this.currentGw" *ngIf="standings && currentGw"
+></app-graph>
 
 <div class="section-separator" *ngIf="standings"></div>
 
