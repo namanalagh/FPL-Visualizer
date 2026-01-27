@@ -22,6 +22,12 @@ export interface StandingEntryDto {
 export interface EntryDto {
   id: number;
   started_event: number;
+  rank: number;
+  name: string;
+  player_first_name: string;
+  player_last_name: string;
+  summary_event_points: number;
+  summary_overall_points: number;
 }
 
 export interface GwPicksDto {
@@ -35,6 +41,7 @@ export interface EntryHistoryDTO {
   points: number;
   total_points: number;
   rank: number;
+  overall_rank: number;
   bank: number;
   value: number;
   points_on_bench: number;

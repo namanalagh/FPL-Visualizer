@@ -1,1 +1,12 @@
-<p>entry works!</p>
+<app-tab-bar 
+[currentGw]="this.currentGw"
+[idInput]="this.entryIdInput"
+[isLeague]="false"
+[title]="entry?.entry_name ?? 'FPL Stats Visualizer'"
+></app-tab-bar>
+
+<app-graph
+[teams]="[this.entry]"
+[currentGw]="this.currentGw" *ngIf="entry && currentGw"
+[isLeague]="false"
+></app-graph>

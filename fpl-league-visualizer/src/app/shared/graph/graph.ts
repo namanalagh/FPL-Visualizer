@@ -11,9 +11,8 @@ import {
   input
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Chart, ChartDataset, ScriptableLineSegmentContext } from 'chart.js/auto';
-import { ProjectionStatOption, StatOption } from '../../standings/standings';
-import { Squad, StandingsVM, Team } from '../../standings/standingsVM';
+import { Chart, ScriptableLineSegmentContext } from 'chart.js/auto';
+import { Squad, Team } from '../../standings/standingsVM';
 import { EventsDto } from '../../StaticDataDTO';
 import { CommonModule } from '@angular/common';
 
@@ -40,6 +39,8 @@ export class Graph {
     this._teams = value;
     this.tryRender();
   }
+
+  @Input() isLeague: boolean = true
   get teams() {return this._teams}
   
   chart!: Chart;
@@ -125,10 +126,10 @@ export class Graph {
     const maxGw = checked && this.showProjectionsBox ? 38 : this.currentGw.id;
     this.chartStartGw = Math.min(this.chartStartGw, this.currentGw.id-1)
     this.chartEndGw = maxGw;
-    this.renderChart();
+    this.renderChart(this.chartStartGw, this.chartEndGw);
   }
 
-  renderChart(fromGw: number = 1, uptoGw: number = 38) {
+  renderChart(fromGw: number = this.chartStartGw, uptoGw: number = this.chartEndGw) {
     console.log("renderChart", this._chartEndGw);
     if(!this.showProjectionsBox) {
       uptoGw = Math.min(uptoGw, this.currentGw.id);
@@ -255,11 +256,11 @@ export class Graph {
       case 'rank':
         this.showProjectionsBox = false;
         this.showCumulative = false
-        return squad.rank;
+        return this.isLeague ? squad.rank : squad.overall_rank;
       case 'weeklyRank':
         this.showProjectionsBox = false;
         this.showCumulative = false
-        return squad.weekly_rank;
+        return this.isLeague ? squad.weekly_rank : squad.rank;
       case 'goalsScored':
         this.showProjectionsBox = false;
         this.showCumulative = true
@@ -313,3 +314,21 @@ export class Graph {
     this.tryRender();
   }
 }
+
+export type StatOption = 
+  | 'gwPoints' 
+  | 'totalPoints' 
+  | 'squadValue' 
+  | 'pointsOnBench' 
+  | 'rank' 
+  | 'weeklyRank'
+  | 'goalsScored'
+  | 'assists'
+  | 'cleanSheets'
+  | 'saves';
+
+export type ProjectionStatOption = 
+  | 'pointsPerGw'
+  | 'teamForm'
+  | 'squadForm'
+

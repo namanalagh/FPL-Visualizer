@@ -7,7 +7,7 @@ import { Chart, ScriptableLineSegmentContext  } from 'chart.js/auto';
 import { FormsModule } from '@angular/forms';
 import { PlayersService } from '../players-service';
 import { EventsDto, StaticDataDto } from '../StaticDataDTO';
-import { FavouriteLeague, FavouritesService } from '../favourites-service';
+import { Favourite, FavouritesService } from '../favourites-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ChipType } from './standingsDTO';
@@ -34,10 +34,10 @@ export class Standings {
   error = '';
   currentGw!: EventsDto 
   showFavourites = false
-  favourites!: FavouriteLeague[]
+  favourites!: Favourite[]
 
   get isFavourite(): boolean {
-    return !!this.standings && this.favouritesService.isFavourite(this.standings.leagueId);
+    return !!this.standings && this.favouritesService.isFavourite(this.standings.leagueId, 0);
   }
 
   @ViewChild('searchContainer', { static: true })
@@ -107,17 +107,18 @@ export class Standings {
     if (!this.standings) return;
 
     const league = {
+      type: 0,
       id: this.standings.leagueId,
       name: this.standings.leagueName
     };
 
     if (this.isFavourite) {
-      this.favouritesService.remove(league.id);
+      this.favouritesService.remove(league.id, 0);
     } else {
-      this.favouritesService.add(league);
+      this.favouritesService.add(league, 0);
     }
 
-    this.favourites = this.favouritesService.getAll();
+    this.favourites = this.favouritesService.getAll(0);
   }
 
   hideFavourites() {
@@ -130,7 +131,7 @@ export class Standings {
     this.gwAvg = 0;
   }
 
-  selectFavourite(fav: FavouriteLeague){
+  selectFavourite(fav: Favourite){
     this.leagueIdInput = fav.id;
     this.loadLeague();
   }
@@ -177,9 +178,13 @@ export class Standings {
 
     this.router.navigate(['/league', this.leagueIdInput]);
   }
+
+  goToEntry(id: number){
+    this.router.navigate(['//entry', id]);
+  }
   
   ngOnInit() {
-    this.favourites = this.favouritesService.getAll();
+    this.favourites = this.favouritesService.getAll(0);
     this.playersService.getStaticData().subscribe({
       next: data => {
         this.staticData = data;
@@ -202,23 +207,6 @@ export class Standings {
   }
 
 }
-
-export type StatOption = 
-  | 'gwPoints' 
-  | 'totalPoints' 
-  | 'squadValue' 
-  | 'pointsOnBench' 
-  | 'rank' 
-  | 'weeklyRank'
-  | 'goalsScored'
-  | 'assists'
-  | 'cleanSheets'
-  | 'saves';
-
-export type ProjectionStatOption = 
-  | 'pointsPerGw'
-  | 'teamForm'
-  | 'squadForm'
 
 
   // OUR LEAGUE: 2246597

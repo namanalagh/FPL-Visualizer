@@ -223,6 +223,7 @@ export class Squad{
     total_points: number = 0;
     squad_players: SquadPlayer[] = [];
     rank: number = 0;
+    overall_rank: number = 0;
     weekly_rank: number = 0;
     active_chip: ChipType = null;
     bank: number = 0;

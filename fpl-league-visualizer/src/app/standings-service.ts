@@ -72,11 +72,24 @@ export class StandingsService {
       this.getLeagueEntry(team.id).pipe(
         map((res: EntryDto) => ({
           id: res.id,
-          started_event: res.started_event ?? 1
+          started_event: res.started_event ?? 1,
+          rank: res.rank,
+          name: res.name,
+          player_first_name: res.player_first_name,
+          player_last_name: res.player_last_name,
+          summary_event_points: res.summary_event_points,
+          summary_overall_points: res.summary_overall_points
         })),
         catchError(()=> of({
           id: team.id,
-          started_event: 1
+          started_event: 1,
+          rank: 1,
+          name: "undefined",
+          player_first_name: "undefined",
+          player_last_name: "undefined",
+          player_name: "undefined",
+          summary_event_points: 0,
+          summary_overall_points: 0
         }))
       )
     )
@@ -104,6 +117,7 @@ export class StandingsService {
     squad.points = dto.entry_history.points ?? 0;
     squad.total_points = dto.entry_history.total_points ?? 0;
     squad.rank = dto.entry_history.rank ?? 0;
+    squad.overall_rank = dto.entry_history.overall_rank ?? 0;
     squad.active_chip = dto.active_chip ?? null;
     squad.bank = dto.entry_history.bank ?? 0;
     squad.value = dto.entry_history.value ?? 1000;
@@ -186,8 +200,8 @@ export class StandingsService {
   }
 
   getLeagueStandingsWithPicks(leagueId: number, gw: number) {
-  return this.getLeagueStandings(leagueId).pipe(
-     map(vm => {
+    return this.getLeagueStandings(leagueId).pipe(
+      map(vm => {
         vm.teams = vm.teams.slice(0, 25);
         return vm;
       }),
@@ -195,7 +209,7 @@ export class StandingsService {
         tap(entries => this.applyEntries(vm.teams, entries)),
         map(() => vm)
       )),
-      switchMap(vm => this.attachTeamPicks(vm, gw).pipe(
+      switchMap(vm => this.attachTeamPicks(vm.teams, gw).pipe(
         map(() =>  {
           this.calculateLeagueRanks(vm, gw);
           return vm;
@@ -204,8 +218,8 @@ export class StandingsService {
     );
   }
 
-  private attachTeamPicks(vm: StandingsVM, maxGw: number) {
-    const teamRequests = vm.teams.map(team => {
+  attachTeamPicks(teams: Team[], maxGw: number) {
+    const teamRequests = teams.map(team => {
 
       const gwRequests = Array.from({ length: maxGw }, (_, i) => i + 1)
       .filter(gw => gw >= team.started_event)
@@ -230,7 +244,7 @@ export class StandingsService {
       return forkJoin(gwRequests);
     });
 
-    return forkJoin(teamRequests).pipe(map(() => vm));
+    return forkJoin(teamRequests).pipe(map(() => teams));
   }
 
 

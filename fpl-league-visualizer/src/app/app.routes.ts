@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Standings } from './standings/standings';
+import { Entry } from './entry/entry';
 
 export const routes: Routes = [
     {
@@ -14,6 +15,14 @@ export const routes: Routes = [
     {
         path: 'league/:leagueId',
         component: Standings
+    },
+    {
+        path: 'entry',
+        component: Entry
+    },
+    {
+        path: 'entry/:entryId',
+        component: Entry
     },
     {
         path: '**',

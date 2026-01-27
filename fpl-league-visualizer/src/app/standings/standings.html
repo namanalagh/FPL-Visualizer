@@ -81,7 +81,7 @@
     </thead>
 
     <tbody>
-      <tr *ngFor="let player of results">
+      <tr (click)="goToEntry(player.id)" *ngFor="let player of results">
         <td class="small-col">{{ player.rank }}</td>
         <td>{{ player.entry_name}}</td>
         <td>{{ player.player_name }}</td>
@@ -125,6 +125,7 @@
 <app-graph
 [teams]="this.standings.teams"
 [currentGw]="this.currentGw" *ngIf="standings && currentGw"
+[isLeague]="true"
 ></app-graph>
 
 <div class="section-separator" *ngIf="standings"></div>

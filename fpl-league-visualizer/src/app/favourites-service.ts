@@ -4,38 +4,40 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class FavouritesService {
-  private readonly KEY = 'favourite_leagues';
+  private readonly LEAGUEKEY = 'favourite_leagues';
+  private readonly ENTRYKEY = 'favourite_entries';
   
-  getAll(): FavouriteLeague[]{
-    const raw = localStorage.getItem(this.KEY);
+  getAll(type: number): Favourite[]{
+    const raw = localStorage.getItem(type == 0 ? this.LEAGUEKEY : this.ENTRYKEY);
     return raw ? JSON.parse(raw) : [];
   } 
 
-  isFavourite(id: number): boolean {
-    return this.getAll().some(l => l.id === id);
+  isFavourite(id: number, type: number): boolean {
+    return this.getAll(type).some(l => l.id === id);
   }
 
-  add(league: FavouriteLeague) {
-    const favs = this.getAll();
-    if (!favs.some(l => l.id === league.id)) {
-      favs.push(league);
-      localStorage.setItem(this.KEY, JSON.stringify(favs));
+  add(fav: Favourite, type: number) {
+    const favs = this.getAll(type);
+    if (!favs.some(l => l.id === fav.id)) {
+      favs.push(fav);
+      localStorage.setItem(type == 0 ? this.LEAGUEKEY : this.ENTRYKEY, JSON.stringify(favs));
     }
   }
 
-  remove(id: number) {
-    const favs = this.getAll().filter(l => l.id !== id);
-    localStorage.setItem(this.KEY, JSON.stringify(favs));
+  remove(id: number, type: number) {
+    const favs = this.getAll(type).filter(l => l.id !== id);
+    localStorage.setItem(type == 0 ? this.LEAGUEKEY : this.ENTRYKEY, JSON.stringify(favs));
   }
 
-  toggle(league: FavouriteLeague) {
-    this.isFavourite(league.id)
-      ? this.remove(league.id)
-      : this.add(league);
+  toggle(fav: Favourite, type: number) {
+    this.isFavourite(fav.id, type)
+      ? this.remove(fav.id, type)
+      : this.add(fav, type);
   }
 } 
 
-export interface FavouriteLeague {
+export interface Favourite {
+  type: number; // 0-league, 1-entry
   id: number;
   name: string;
 }

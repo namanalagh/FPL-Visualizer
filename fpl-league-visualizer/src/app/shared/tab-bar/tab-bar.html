@@ -1,0 +1,47 @@
+<div class="tab-bar" >
+  <h1>{{title ?? "FPL Stats Visualizer"}}</h1>
+  <div class="gw-info" *ngIf="this.idInput && this.title">
+    <h3 class="gw-title">{{ currentGw.name }}</h3>
+
+    <div class="gw-stats">
+      <span>Average: {{ currentGw.average_entry_score }} </span>
+      <span class="separator">|</span>
+      <span> Highest: {{ currentGw.highest_score ?? 0 }}</span>
+    </div>
+  </div>
+
+  <div class="league-search"  #searchContainer>
+    <div class="search-input-wrapper">
+      <input
+      type="number"
+      placeholder="Enter {{placeHolder}} ID"
+      [(ngModel)]="idInput"
+      (focus)="showFavourites = true"
+      (blur)="hideFavourites()"
+      (keyup.enter)="loadResult(idInput)"
+      />
+
+      <button
+      class="star-btn"
+      (click)="toggleFavourite($event)"
+      [class.active]="isFavourite"
+      aria-label="Favourite league"
+      >
+      {{isFavourite ? '★' : '☆'}}
+      </button>
+      
+      <div class="favourites-dropdown" *ngIf="showFavourites && favourites.length">
+        <div
+          class="fav-item"
+          *ngFor="let fav of favourites"
+          (mousedown)="selectFavourite(fav)"
+        >
+          ★ {{ fav.name }} ({{ fav.id }})
+        </div>
+      </div>
+    </div>
+
+    <button (click)="loadResult(idInput)">Search</button>
+
+  </div>
+</div>
