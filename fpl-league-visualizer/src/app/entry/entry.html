@@ -4,7 +4,16 @@
 [isLeague]="false"
 [title]="entry?.entry_name ?? 'FPL Stats Visualizer'"
 ></app-tab-bar>
-
+<div class="site-info" *ngIf="!entry">
+  <h4>To find your Entry ID, view your team at <a
+      href="https://fantasy.premierleague.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="green-text"
+    >
+    fantasy.premierleague.com</a> 
+    and look for your Entry ID in the URL: entry/<span class="green-text">your-entry-id</span>/event</h4>
+</div>
 <app-graph
 [teams]="[this.entry]"
 [currentGw]="this.currentGw" *ngIf="entry && currentGw"

@@ -1,51 +1,9 @@
-<div class="tab-bar" >
-  <h1 *ngIf="standings">{{standings.leagueName}}</h1>
-  <h1 *ngIf="!standings">FPL Stats Visualizer</h1>
-  <div class="gw-info" *ngIf="standings">
-    <h3 class="gw-title">{{ currentGw.name }}</h3>
-
-    <div class="gw-stats">
-      <span>Average: {{ currentGw.average_entry_score }} </span>
-      <span class="separator">|</span>
-      <span> Highest: {{ currentGw.highest_score ?? 0 }}</span>
-    </div>
-  </div>
-
-  <div class="league-search"  #searchContainer>
-    <div class="search-input-wrapper">
-      <input
-      type="number"
-      placeholder="Enter League ID"
-      [(ngModel)]="leagueIdInput"
-      (focus)="showFavourites = true"
-      (blur)="hideFavourites()"
-      (keyup.enter)="loadLeague()"
-      />
-
-      <button
-      class="star-btn"
-      (click)="toggleFavourite($event)"
-      [class.active]="isFavourite"
-      aria-label="Favourite league"
-      >
-      {{isFavourite ? '★' : '☆'}}
-      </button>
-      
-      <div class="favourites-dropdown" *ngIf="showFavourites && favourites.length">
-        <div
-          class="fav-item"
-          *ngFor="let fav of favourites"
-          (mousedown)="selectFavourite(fav)"
-        >
-          ★ {{ fav.name }} ({{ fav.id }})
-        </div>
-      </div>
-    </div>
-
-    <button (click)="loadLeague()">Search</button>
-
-  </div>
-</div>
+<app-tab-bar 
+[currentGw]="this.currentGw"
+[idInput]="this.leagueIdInput"
+[isLeague]="true"
+[title]="standings?.leagueName ?? 'FPL Stats Visualizer'"
+></app-tab-bar>
 <div class="loading-overlay" *ngIf="loading">
   Loading league…
 </div>
@@ -56,8 +14,8 @@
       rel="noopener noreferrer"
       class="green-text"
     >
-      fantasy.premierleague.com
-    </a> and look for your League ID in the URL: leagues/<span class="green-text">your-league-id</span>/standings</h4>
+      fantasy.premierleague.com</a> 
+      and look for your League ID in the URL: leagues/<span class="green-text">your-league-id</span>/standings</h4>
 </div>
 
 <div *ngIf="error" class="error">
@@ -288,14 +246,14 @@
 <div class="mini-table-section" *ngIf="standings">
 
   <div class="mini-table-wrapper">
-    <h3 class="mini-table-header">Top DefCons</h3>
+    <h3 class="mini-table-header">Top Defcons</h3>
     <div class="mini-table-bg">
       <table class="mini-table" *ngIf="standings">
         <thead>
           <tr>
             <th>Player</th>
             <th>Team</th>
-            <th>DefCons</th>
+            <th>Defcons</th>
           </tr>
         </thead>
 

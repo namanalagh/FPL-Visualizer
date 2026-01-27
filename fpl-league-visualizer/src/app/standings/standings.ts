@@ -12,10 +12,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ChipType } from './standingsDTO';
 import { Graph } from "../shared/graph/graph";
+import { TabBar } from '../shared/tab-bar/tab-bar';
 
 @Component({
   selector: 'app-standings',
-  imports: [CommonModule, FormsModule, Graph],
+  imports: [CommonModule, FormsModule, Graph, TabBar],
   standalone: true,
   templateUrl: './standings.html',
   styleUrl: './standings.css',
@@ -29,7 +30,7 @@ export class Standings {
   totalPts: number = 0;
   totalValue: number = 0;
   gwAvg: number = 0;
-  leagueIdInput: number | null = null;
+  leagueIdInput!: number;
   loading = false;
   error = '';
   currentGw!: EventsDto 

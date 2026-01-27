@@ -139,7 +139,7 @@ export class StandingsVM{
                     entry.clearances_blocks_interceptions += gwStats.clearances_blocks_interceptions * m;
                     entry.recoveries += gwStats.recoveries * m;
                     entry.tackles += gwStats.tackles * m;
-                    entry.defensive_contribution += gwStats.defensive_contribution * m;
+                    entry.defensive_contribution += (entry.element_type == 2 ? (gwStats.defensive_contribution >= 12 ? 1 : 0) : (gwStats.defensive_contribution >= 10 ? 1 : 0)) * m;
                 }
             }
         }

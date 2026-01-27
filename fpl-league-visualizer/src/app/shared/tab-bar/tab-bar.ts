@@ -20,7 +20,10 @@ export class TabBar {
 
   showFavourites = false
   favourites!: Favourite[]
-  placeHolder = this.isLeague ? "League" : "Entry"
+  
+  get placeHolder(): string {
+    return this.isLeague ? "League" : "Entry";
+  }
 
   get isFavourite(): boolean {
     return !!this.title && this.favouritesService.isFavourite(this.idInput, +!this.isLeague);
