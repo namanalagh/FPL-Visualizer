@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, input } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, input, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EventsDto } from '../../StaticDataDTO';
 import { Title } from '@angular/platform-browser';
@@ -21,6 +21,19 @@ export class TabBar {
   showFavourites = false
   favourites!: Favourite[]
   
+  @ViewChild('searchContainer', { static: true })
+  searchContainer!: ElementRef;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.searchContainer.nativeElement.contains(event.target)) {
+      this.showFavourites = false;
+    }
+    else {
+      this.showFavourites = true;
+    }
+  }
+
   get placeHolder(): string {
     return this.isLeague ? "League" : "Entry";
   }

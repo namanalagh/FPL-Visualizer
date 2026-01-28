@@ -41,19 +41,6 @@ export class Standings {
     return !!this.standings && this.favouritesService.isFavourite(this.standings.leagueId, 0);
   }
 
-  @ViewChild('searchContainer', { static: true })
-  searchContainer!: ElementRef;
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    if (!this.searchContainer.nativeElement.contains(event.target)) {
-      this.showFavourites = false;
-    }
-    else {
-      this.showFavourites = true;
-    }
-  }
-
   get avgPts(): number {
     return this.totalPts/this.results.length
   }
