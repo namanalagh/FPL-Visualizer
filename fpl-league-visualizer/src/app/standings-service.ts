@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChipType, EntryDto, GwPicksDto, StandingsDto } from './standings/standingsDTO';
-import { Squad, SquadPlayer, StandingsVM, Team } from './standings/standingsVM';
-import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { ChipType, EntryDto, GwPicksDto, StandingsDto, TransferDto } from './standings/standingsDTO';
+import { Squad, SquadPlayer, StandingsVM, Team, Transfer } from './standings/standingsVM';
+import { catchError, forkJoin, map, min, of, switchMap, tap } from 'rxjs';
 import { PlayersService } from './players-service';
 
 @Injectable({
@@ -42,6 +42,26 @@ export class StandingsService {
           return of(squad);
         })
       );
+  }
+
+  getEntryTransfers(userId: number, currentGw: number){
+    return this.http.get<TransferDto[]>(`https://fplstatsvisualizer-api-fydncme4baa9gkev.southindia-01.azurewebsites.net/api/entry/${userId}/transfers/`)
+    .pipe(
+      map(raw => 
+        raw.map(t => {
+            const out_p = this.playersService.getPlayerInfo(t.element_out)!;
+            const in_p = this.playersService.getPlayerInfo(t.element_in)!;
+
+            return {
+              gw: t.event,
+              out_player: this.playersService.buildCumulativeFromGw(out_p, t.event, Math.min(currentGw, t.event + 5)),
+              out_cost: t.element_out_cost,
+              in_player: this.playersService.buildCumulativeFromGw(in_p, t.event, Math.min(currentGw, t.event + 5)),
+              in_cost: t.element_in_cost,
+            } as Transfer
+        })
+      )
+    )
   }
 
   mapGwPicks(json: any, gw: number){

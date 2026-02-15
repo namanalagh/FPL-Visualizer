@@ -52,6 +52,7 @@ export class Graph {
   _showProjectionsBox = false
   selectedStat: StatOption = 'totalPoints';
   selectedProjectionStat: ProjectionStatOption = 'teamForm';
+  startGw = 1
   
   constructor(private zone: NgZone) {}
 
@@ -63,6 +64,7 @@ export class Graph {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['currentGw'] && this.currentGw && this.teams) {
       console.log("ngOnChanges");
+      if(!this.isLeague) {this.startGw = this.teams[0].started_event}
       this.renderChart()
     }
   } 
@@ -102,7 +104,7 @@ export class Graph {
 
     if (isNaN(value)) return;
 
-    value = Math.max(1, value);
+    value = Math.max(this.startGw, value);
     value = Math.min(value, this._chartEndGw-1);
 
     this._chartStartGw = value;

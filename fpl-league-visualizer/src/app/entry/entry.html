@@ -19,3 +19,48 @@
 [currentGw]="this.currentGw" *ngIf="entry && currentGw"
 [isLeague]="false"
 ></app-graph>
+
+<div class="section-separator"></div>
+
+<h3 *ngIf="entry">Transfer History</h3>
+
+<table class="transfer-table" *ngIf="entry">
+  <thead>
+    <th>GW</th>
+    <th>In</th>
+    <th>Out</th>
+    <th>Impact*</th>
+  </thead>
+  <tr *ngFor="let transfer of entry.transfers">
+  <td>{{ transfer.gw }}</td>
+  <td>
+    <div>
+      {{ transfer.in_player.web_name }}
+      <span class="positive">←</span>
+    </div>
+    <div class="price">
+      {{ transfer.in_cost/10 }} M
+    </div>
+    
+  </td>
+  <td>
+    <div>
+      <span class="negative">→</span>
+      {{ transfer.out_player.web_name }} 
+    </div>
+    <div class="price">
+      {{ transfer.out_cost/10 }} M
+    </div>
+  </td>
+  <td
+    [ngClass]="{
+      'positive': (transfer.in_player.total_points - transfer.out_player.total_points) > 0,
+      'negative': (transfer.in_player.total_points - transfer.out_player.total_points) < 0
+    }"
+  >
+    {{ transfer.in_player.total_points - transfer.out_player.total_points }}
+  </td>
+  </tr>
+</table>
+
+<label class="site-info" *ngIf="entry">*Points difference in the next 5 gameweeks after transfer</label>

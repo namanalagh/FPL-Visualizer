@@ -4,11 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { EventsDto } from '../../StaticDataDTO';
 import { Title } from '@angular/platform-browser';
 import { Favourite, FavouritesService } from '../../favourites-service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-tab-bar',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './tab-bar.html',
   styleUrl: './tab-bar.css',
 })

@@ -13,14 +13,14 @@ export interface EventsDto{
 
 export interface PlayersCumulativeDto{
     id: number
-    event_points: number
     first_name: string
     second_name: string
     team: number;
+    web_name: string
+    element_type: number
     points_per_game: string
     total_points: number
     value_form: number
-    web_name: string
     goals_scored: number
     assists: number
     clean_sheets: number
@@ -37,7 +37,6 @@ export interface PlayersCumulativeDto{
     tackles: number
     defensive_contribution: number
     starts: number
-    element_type: number
 }
 
 export interface PlayerDTO {
@@ -47,12 +46,13 @@ export interface PlayerDTO {
 export interface PlayerGwDto { // use this to make a cache 
     element: number;
     round: number; // gw
-    minutes: number;
-    goals_scored: number;
-    assists: number;
-    clean_sheets: number;
-    goals_conceded: number;
-    own_goals: number;
+    total_points: number
+    value_form: number
+    goals_scored: number
+    assists: number
+    clean_sheets: number
+    goals_conceded: number
+    own_goals: number
     penalties_saved: number
     penalties_missed: number
     yellow_cards: number
@@ -63,4 +63,5 @@ export interface PlayerGwDto { // use this to make a cache
     recoveries: number
     tackles: number
     defensive_contribution: number
+    starts: number
 }

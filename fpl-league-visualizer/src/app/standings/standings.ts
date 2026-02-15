@@ -59,7 +59,6 @@ export class Standings {
   ) {}
   
 
-  
   calculateStats(){  
     this.resetStats();
     this.results.forEach(res => {
@@ -69,7 +68,6 @@ export class Standings {
     });
 
     this.gwAvg /= this.results.length;
-    // this.renderChart(this.chartStartGw, this.chartEndGw);
     // this.cdr.detectChanges();
   }
 

@@ -92,7 +92,7 @@ h1, th, tfoot {
 .tab-bar{
   display: flex;
   align-items: center;          
-  justify-content: space-between;
+  position: relative; 
   background: var(--pl-purple);
   color: white;
   width: 100;
@@ -101,8 +101,16 @@ h1, th, tfoot {
 .tab-bar h1{
   padding-left: 20px;
 }
+.nav-button { 
+  position: relative;
+  padding-left: 20px;
+  color: white;
+}
 .gw-info {
-  text-align: center;           
+ position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;          
 }
 .site-info{
   color: white;
@@ -132,6 +140,7 @@ h1, th, tfoot {
   font-size: 0.9rem;           
 }
 .league-search {
+  margin-left: auto;
   font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   display: flex;
   align-items: center;
@@ -466,6 +475,10 @@ html, body {
   .fav-item {
     padding: 12px 14px;        
     font-size: 16px;
+  }
+
+  .gw-info{
+    position: relative;
   }
 
   .gw-title {

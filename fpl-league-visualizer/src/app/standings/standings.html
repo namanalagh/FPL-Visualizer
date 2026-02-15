@@ -59,7 +59,7 @@
           </td>
         </ng-template>
         <td class="medium-col">{{ player.total }}</td>
-        <td class="medium-col">{{ player.total/(currentGw.id - player.started_event + 1) | number:`1.0-0`}}</td>
+        <td class="medium-col">{{ player.total/(currentGw.id - player.started_event + 1) | number:`1.0-1`}}</td>
         <td class="medium-col">{{ player.points_behind_leader*-1 }}</td>
         <td class="medium-col">{{ player.squad_by_gw[currentGw.id].points_on_bench }}</td>
         <td class="medium-col">{{ (player.squad_by_gw[currentGw.id].value-player.squad_by_gw[currentGw.id].bank)/10 }} M</td>

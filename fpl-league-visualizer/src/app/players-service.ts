@@ -75,6 +75,74 @@ export class PlayersService {
   getPlayerInfo(playerId: number) : PlayersCumulativeDto | undefined {
     return this.playerInfoCache.get(playerId);
   }
+
+  public buildCumulativeFromGw(
+    basePlayer: PlayersCumulativeDto,
+    fromGw: number,
+    toGw: number
+  ) : PlayersCumulativeDto {
+    const gwStats: PlayerGwDto[] = [];
+
+    for(let gw = fromGw; gw <= toGw; gw++){
+      const stat = this.getPlayerGwStats(basePlayer.id, gw);
+      if(stat){
+        gwStats.push(stat);
+      }
+    }
+
+    const aggregated = gwStats.reduce(
+      (acc, gw) => {
+        acc.total_points += gw.total_points;
+        acc.goals_scored += gw.goals_scored;
+        acc.assists += gw.assists;
+        acc.clean_sheets += gw.clean_sheets;
+        acc.goals_conceded += gw.goals_conceded;
+        acc.own_goals += gw.own_goals;
+        acc.penalties_saved += gw.penalties_saved;
+        acc.penalties_missed += gw.penalties_missed;
+        acc.yellow_cards += gw.yellow_cards;
+        acc.red_cards += gw.red_cards;
+        acc.saves += gw.saves;
+        acc.bonus += gw.bonus;
+        acc.clearances_blocks_interceptions += gw.clearances_blocks_interceptions;
+        acc.recoveries += gw.recoveries;
+        acc.tackles += gw.tackles;
+        acc.defensive_contribution += gw.defensive_contribution;
+        acc.starts = gw.starts;
+
+        return acc;
+      },
+      {
+        ...basePlayer,
+        event_points: 0,
+        total_points: 0,
+        goals_scored: 0,
+        assists: 0,
+        clean_sheets: 0,
+        goals_conceded: 0,
+        own_goals: 0,
+        penalties_saved: 0,
+        penalties_missed: 0,
+        yellow_cards: 0,
+        red_cards: 0,
+        saves: 0,
+        bonus: 0,
+        clearances_blocks_interceptions: 0,
+        recoveries: 0,
+        tackles: 0,
+        defensive_contribution: 0,
+        starts: 0
+      } as PlayersCumulativeDto
+    );
+
+    
+    aggregated.points_per_game = aggregated.starts > 0 ? (aggregated.total_points / aggregated.starts).toFixed(2) : '0.00';
+
+    return aggregated;
+  }
 }
 
   
+
+// Cumulative data for each player comes from the static data api
+// Per Gw data needs a call per player

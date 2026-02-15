@@ -33,27 +33,33 @@ export class Entry {
     this.standingsService.getLeagueEntry(userId).pipe(
       map(
         dto => {
-        this.entry = new Team(); 
+          this.entry = new Team(); 
 
-        this.entry.id = dto.id;
-        this.entry.entry_name = dto.name;
-        this.entry.player_name = dto.player_first_name + " " + dto.player_last_name;
-        this.entry.started_event = dto.started_event;
-        this.entry.event_total = dto.summary_event_points;
-        this.entry.total = dto.summary_overall_points;
-        
-          console.log(this.entry, "Entry")
+          this.entry.id = dto.id;
+          this.entry.entry_name = dto.name;
+          this.entry.player_name = dto.player_first_name + " " + dto.player_last_name;
+          this.entry.started_event = dto.started_event;
+          this.entry.event_total = dto.summary_event_points;
+          this.entry.total = dto.summary_overall_points;
         }
       ),
       switchMap(team =>
         this.standingsService.attachTeamPicks([this.entry], this.currentGw.id).pipe(
-        map(() => team) 
+          map(() => team) 
+        )
+      ),
+      switchMap (_ => 
+        this.standingsService.getEntryTransfers(this.entry.id, this.currentGw.id).pipe(
+          map(transfers => {
+            this.entry.transfers = transfers;
+          })
+        )
       )
     )
-    ).subscribe(team => {
+    .subscribe(team => {
       console.log(this.entry, "Team with picks attached");
       this.cdr.detectChanges();
-    });
+    })
   }
 
   ngOnInit(){

@@ -56,6 +56,14 @@ export interface PicksDto {
   element_type: number;
 }
 
+export interface TransferDto {
+  element_in: number;
+  element_out: number;
+  event: number;
+  element_in_cost: number;
+  element_out_cost: number;
+}
+
 export type ChipType =
 | null
 | 'bboost'

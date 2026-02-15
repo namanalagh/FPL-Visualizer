@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FPLWebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a0501b122f6aeef1d19689feca14655fc614ee7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a78aff08427f53fe62b50bdc891c49554684005")]
 [assembly: System.Reflection.AssemblyProductAttribute("FPLWebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FPLWebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

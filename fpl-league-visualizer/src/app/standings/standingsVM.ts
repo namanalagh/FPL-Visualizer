@@ -1,3 +1,4 @@
+import { TrackByFunction } from "@angular/core";
 import { PlayerGwDto, PlayersCumulativeDto } from "../StaticDataDTO";
 import { ChipType } from "./standingsDTO";
 
@@ -207,6 +208,7 @@ export class Team{
     total: number = 0;
     squad_by_gw: Squad[] = [];
     points_behind_leader = 0;
+    transfers: Transfer[] = [];
 
     constructor() {
         this.squad_by_gw = Array.from({length: 39}, (_,i) => {
@@ -243,6 +245,14 @@ export class SquadPlayer{
     is_vice_captain: boolean = false;
     is_captain: boolean = false;
     element_type: number = 0; // player type: gk, def etc
+}
+
+export interface Transfer{
+    gw: number;
+    out_player: PlayersCumulativeDto;
+    out_cost: number;
+    in_player: PlayersCumulativeDto;
+    in_cost: number;
 }
 
 export interface PlayerOwnership {

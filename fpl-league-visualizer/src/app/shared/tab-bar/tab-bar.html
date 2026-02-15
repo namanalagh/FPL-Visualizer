@@ -1,6 +1,20 @@
 <div class="tab-bar" >
   <h1>{{title ?? "FPL Stats Visualizer"}}</h1>
-  <div class="gw-info" *ngIf="this.idInput && this.title">
+  <a *ngIf="isLeague"
+    routerLink="/entry"
+    routerLinkActive="active"
+    class="nav-button"
+  >
+    Managers
+  </a>
+  <a *ngIf="!isLeague"
+    routerLink="/standings"
+    routerLinkActive="active"
+    class="nav-button"
+  >
+    Leagues
+  </a>
+  <div class="gw-info" *ngIf="this.idInput && this.title != 'FPL Stats Visualizer'">
     <h3 class="gw-title">{{ currentGw.name }}</h3>
 
     <div class="gw-stats">
