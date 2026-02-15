@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Chart, ScriptableLineSegmentContext } from 'chart.js/auto';
-import { Squad, Team } from '../../standings/standingsVM';
+import { PlayerContribution, Squad, Team } from '../../standings/standingsVM';
 import { EventsDto } from '../../StaticDataDTO';
 import { CommonModule } from '@angular/common';
 
@@ -131,8 +131,17 @@ export class Graph {
     this.renderChart(this.chartStartGw, this.chartEndGw);
   }
 
-  renderChart(fromGw: number = this.chartStartGw, uptoGw: number = this.chartEndGw) {
-    console.log("renderChart", this._chartEndGw);
+  renderChart(fromGw: number = this.chartStartGw, uptoGw: number = this.chartEndGw){
+    if(this.selectedStat != 'pointsByClub'){
+      this.renderLineChart(fromGw, uptoGw);
+    }
+    else {
+      this.renderPieChart();
+    }
+  }
+
+  renderLineChart(fromGw: number = this.chartStartGw, uptoGw: number = this.chartEndGw) {
+    console.log("renderLineChart", this._chartEndGw);
     if(!this.showProjectionsBox) {
       uptoGw = Math.min(uptoGw, this.currentGw.id);
     }
@@ -237,6 +246,118 @@ export class Graph {
     })
   }
 
+  renderPieChart() {
+    console.log("renderPieChart", this._chartEndGw);
+    
+    if (!this.leagueChart) return;
+    
+
+    const labels = [
+      "Arsenal",
+      "Aston Villa",
+      "Bournemouth",
+      "Brentford",
+      "Brighton",
+      "Burnley",
+      "Chelsea",
+      "Crystal Palace",
+      "Everton",
+      "Fulham",
+      "Leeds",
+      "Liverpool",
+      "Manchester City",
+      "Manchester United",
+      "Newcastle",
+      "Nottingham Forest",
+      "Sunderland",
+      "Tottenham",
+      "West Ham",
+      "Wolves"
+    ]
+    
+    const clubGradientColors: { primary: string; secondary?: string }[] = [
+      { primary: "#EF0107", secondary: "#FFFFFF" }, // Arsenal
+      { primary: "#670E36", secondary: "#95BFE5" }, // Aston Villa
+      { primary: "#DA291C", secondary: "#000000" }, // Bournemouth
+      { primary: "#E30613", secondary: "#FFFFFF" }, // Brentford
+      { primary: "#0057B8", secondary: "#FFFFFF" }, // Brighton
+      { primary: "#6C1D45", secondary: "#99D6EA" }, // Burnley
+      { primary: "#034694" }, // Chelsea
+      { primary: "#1B458F", secondary: "#C4122E" }, // Crystal Palace
+      { primary: "#003399" }, // Everton
+      { primary: "#ffffff", secondary: "#040000c0" }, // Fulham
+      { primary: "#ffffff", secondary: "#FFCD00" }, // Leeds
+      { primary: "#C8102E"}, // Liverpool
+      { primary: "#6CABDD"}, // Manchester City
+      { primary: "#DA291C" }, // Manchester United
+      { primary: "#000000", secondary: "#FFFFFF" }, // Newcastle
+      { primary: "#DD0000"}, // Nottingham Forest
+      { primary: "#EB172B", secondary: "#FFFFFF" }, // Sunderland
+      { primary: "#ffffff", secondary: "#132257" }, // Tottenham
+      { primary: "#7A263A", secondary: "#1BB1E7" }, // West Ham
+      { primary: "#FDB913" }, // Wolves
+    ];
+
+    const ctx = this.leagueChart.nativeElement.getContext("2d");
+    if (!ctx) return; 
+
+    // const gradients = clubGradientColors.map(colors => {
+    //   const gradient = ctx.createRadialGradient(
+    //     200, 200, 20,   // inner circle
+    //     200, 200, 200   // outer circle
+    //   );
+
+    //   gradient.addColorStop(0, colors.primary);
+    //   gradient.addColorStop(1, colors.secondary);
+
+    //   return gradient;
+    // });
+
+    const datasets = [
+      {
+        data: this.getPieChartData(this.teams[0]),
+        // backgroundColor: gradients,
+        borderColor: clubGradientColors.map(c =>
+          c.secondary || c.primary
+        ),
+        borderWidth: 2,
+        // hoverOffset: 8
+        backgroundColor: clubGradientColors.map(c => c.primary)
+      }
+    ]
+    console.log(this.getPieChartData(this.teams[0]));
+    // console.log(datasets)
+
+    this.zone.runOutsideAngular(() => {
+      const isMobile = window.innerWidth < 600;
+      this.chart?.destroy();
+  
+      this.chart = new Chart(this.leagueChart.nativeElement, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              display: false,
+              position: 'top',
+              labels: {
+                boxWidth: isMobile ? 5 : 10,
+                font: {
+                  size: isMobile ? 6 : 10,
+                }
+              }
+            },
+          }
+        },
+      })
+    })
+  }
+
   getStatValue(squad: Squad): number {
     switch (this.selectedStat) {
       case 'gwPoints':
@@ -284,6 +405,17 @@ export class Graph {
     }
   }
 
+  getPieChartData(team: Team): number[] {
+    switch(this.selectedStat){
+      case 'pointsByClub':
+        this.showProjectionsBox = false;
+        this.showCumulative = false;
+        return team.contributionsByClub.map(team => team.total_points);
+      default:
+        return [];
+    }
+  }
+
   private createProjection(team: Team, data: number[], fromGw: number){
       
     switch (this.selectedProjectionStat) {
@@ -327,7 +459,9 @@ export type StatOption =
   | 'goalsScored'
   | 'assists'
   | 'cleanSheets'
-  | 'saves';
+  | 'saves'
+  | 'pointsByClub'
+  ;
 
 export type ProjectionStatOption = 
   | 'pointsPerGw'

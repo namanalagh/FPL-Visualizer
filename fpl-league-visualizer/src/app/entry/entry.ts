@@ -57,6 +57,7 @@ export class Entry {
       )
     )
     .subscribe(team => {
+      this.entry.getPlayerContributions(0, this.currentGw.id, (id, gw) => this.playersService.getPlayerGwStats(id, gw), id => this.playersService.getPlayerInfo(id));
       console.log(this.entry, "Team with picks attached");
       this.cdr.detectChanges();
     })

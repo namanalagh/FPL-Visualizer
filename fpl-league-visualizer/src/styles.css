@@ -204,104 +204,6 @@ h1, th, tfoot {
   z-index: 1000;
 }
 
-.chart-wrapper {
-  display: flex;
-  width: 98%;
-  max-width: 98%;
-  margin: 0 auto; 
-  overflow: hidden;
-}
-
-.chart-wrapper canvas {
-  width: 100% !important;
-  height: auto !important;
-  max-width: 100%;
-  display: block;
-}
-
-.chart-params {
-  display: flex;
-  align-items: center;
-}
-.chart-params-left{
-    display: flex;
-    align-items: center;
-  /* padding-right: 20px; */
-}
-.chart-params-projections {
-  align-items: center;
-  padding-left: 20px;
-  display: flex;
-}
-.chart-params-gw {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-  padding-right: 20px;
-  font-family: 'Montserrat', system-ui, sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-}
-.chart-params-gw-cumulative {
-  padding-right: 20px;
-}
-
-.chart-params-gw-cumulative label {
-  gap: 2px;
-}
-.chart-params-gw input[type="number"] {
-  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  width: 60px;
-  font-size: 18px;
-  font-weight: 500;
-  background-color: var(--pl-purple);
-  color: white;
-  padding-left: 5px;
-}
-.chart-params label{
-  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  color: white;
-  font-weight: 600;
-  font-size: 18px;
-}
-.stat-label {
-  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  display: flex;
-  align-items: center;
-  /* gap: 8px; */
-  margin-top: 12px;
-  margin-bottom: 12px;
-  font-weight: 600;
-  font-size: 14px;
-  padding-left: 20px;
-}
-
-.stat-label select {
-  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  appearance: none;       
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  justify-content: center;
-  line-height: 1;      
-
-  padding: 6px 12px;
-  align-items: center;
-  font-size: 18px;
-  font-weight: 600;
-
-  
-  background-color: var(--pl-purple);  
-  color: white;
-
-  cursor: pointer;
-}
-
-.stat-label select option {
-  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: white;
-  color: black;
-}
 
 /* Chrome, Edge, Safari */
 input[type=number]::-webkit-inner-spin-button,
@@ -404,7 +306,7 @@ input[type=number] {
 
 html, body {
   width: 100%;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 * {
@@ -538,54 +440,6 @@ html, body {
 
   label {
     font-size: 0.8rem;
-  }
-
-  .chart-wrapper {
-    margin-left: -8px;  
-    margin-right: -8px;
-  }
-
-  .chart-wrapper canvas {
-    min-height: 400px;  
-    max-height: 400px;
-  }
-
-  .chart-params {
-    flex-wrap: wrap;
-    row-gap: 8px;
-  }
-
-  .chart-params label {
-    font-size: 12px;
-  }
-
-  .chart-params-gw {
-    font-size: 12px;
-    padding-right: 2px;
-    gap: 6px;
-  }
-
-  .chart-params-gw input[type="number"] {
-    width: 44px;
-    font-size: 14px;
-    padding-left: 4px;
-  }
-
-  .chart-params label,
-  .chart-params .stat-label {
-    font-size: 10px !important;
-    line-height: 1.2;
-    font-weight: 500;
-    padding-left: 8px !important;
-  }
-
-  .chart-params select {
-    font-size: 10px !important;
-    height: 28px;
-  }
-
-  .chart-params input[type="checkbox"] {
-    transform: scale(0.9);
   }
 
   .mini-table td,

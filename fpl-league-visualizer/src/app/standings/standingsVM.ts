@@ -8,7 +8,7 @@ export class StandingsVM{
     teams: Team[] = [];
     currentGw: number = 1;
     top10Owned: PlayerOwnership[] = [];
-    playerContributions: PlayerContribution[] = [];
+    
     topPointScorers: PlayerContribution[] = [];
     topGoalScorers: PlayerContribution[] = [];
     topAssistProviders: PlayerContribution[] = [];
@@ -96,6 +96,7 @@ export class StandingsVM{
                         entry = {
                             element: sp.element,
                             element_type: 0,
+                            team: player?.team ?? 0,
                             fplTeamId: team.id,
                             fplTeamName: team.entry_name,
                             web_name: player?.web_name ?? 'Unknown',
@@ -141,7 +142,9 @@ export class StandingsVM{
                     entry.recoveries += gwStats.recoveries * m;
                     entry.tackles += gwStats.tackles * m;
                     entry.defensive_contribution += (entry.element_type == 2 ? (gwStats.defensive_contribution >= 12 ? 1 : 0) : (gwStats.defensive_contribution >= 10 ? 1 : 0)) * m;
+                    team.playerContributions.push(entry);
                 }
+
             }
         }
 
@@ -150,7 +153,6 @@ export class StandingsVM{
         }
 
         const all = Array.from(map.values());
-        this.playerContributions = all;
 
         this.topPointScorers = [...all]
         .sort((a,b) => b.total_points - a.total_points)
@@ -185,16 +187,6 @@ export class StandingsVM{
         .sort((a,b) => b.points_per_game - a.points_per_game)
         .filter(a => a.starts > 9)
         .slice(0,10);
-
-        // console.table(
-        //     this.topDefenders.slice(0, 20).map(p => ({
-        //         name: p.web_name,
-        //         pts: p.total_points,
-        //         goals: p.goals_scored,
-        //         assists: p.assists,
-        //         def: p.defensive_contribution
-        //     }))
-        // );
     }
 }
 
@@ -209,6 +201,36 @@ export class Team{
     squad_by_gw: Squad[] = [];
     points_behind_leader = 0;
     transfers: Transfer[] = [];
+    playerContributions: PlayerContribution[] = [];
+    contributionsByClub: PlayerContribution[] = Array.from(
+        { length: 20 },
+        () => ({
+            element: 0,
+            element_type: 0,
+            team: 0,
+            fplTeamId: 0,
+            fplTeamName: "0",
+            points_per_game: 0,
+            total_points: 0,
+            web_name: "",
+            goals_scored: 0,
+            assists: 0,
+            clean_sheets: 0,
+            goals_conceded: 0,
+            own_goals: 0,
+            penalties_saved: 0,
+            penalties_missed: 0,
+            yellow_cards: 0,
+            red_cards: 0,
+            saves: 0,
+            bonus: 0,
+            clearances_blocks_interceptions: 0,
+            recoveries: 0,
+            tackles: 0,
+            defensive_contribution: 0,
+            starts: 0,
+        })
+    );
 
     constructor() {
         this.squad_by_gw = Array.from({length: 39}, (_,i) => {
@@ -216,6 +238,105 @@ export class Team{
             squad.gw = i;
             return squad;
         })
+    }
+
+    getContributionsByClub(){
+        this.playerContributions.forEach(player => {
+            console.log(player.team, "=>", player.total_points);
+            this.contributionsByClub[player.team-1].total_points += (player.total_points);
+            
+        })
+        console.log(this.contributionsByClub.map(t=> t.total_points));
+    }
+
+    getPlayerContributions(
+        fromGw: number = 0,
+        toGw: number = 0,
+        getPlayerGwStats: (playerId: number, gw: number) => PlayerGwDto | undefined,
+        getPlayerDetails: (playerId: number) => PlayersCumulativeDto | undefined
+        ) {
+
+        const map = new Map<string, PlayerContribution>();
+
+        for (let gw = fromGw; gw <= toGw; gw++) {
+            const squad = this.squad_by_gw[gw];
+            if (!squad) continue;
+
+            for (const sp of squad.squad_players) {
+                if (sp.multiplier === 0) continue;   // benched
+
+                const gwStats = getPlayerGwStats(sp.element, gw);
+                if (!gwStats) continue;
+
+                const player = getPlayerDetails(sp.element);
+
+                const key = `${this.id}_${sp.element}`;
+
+                let entry = map.get(key);
+                if (!entry) {
+                    entry = {
+                        element: sp.element,
+                        element_type: 0,
+                        team: player?.team ?? 0,
+                        fplTeamId: this.id,
+                        fplTeamName: this.entry_name,
+                        web_name: player?.web_name ?? 'Unknown',
+                        total_points: 0,
+                        points_per_game: 0,
+                        goals_scored: 0,
+                        assists: 0,
+                        clean_sheets: 0,
+                        goals_conceded: 0,
+                        own_goals: 0,
+                        penalties_saved: 0,
+                        penalties_missed: 0,
+                        yellow_cards: 0,
+                        red_cards: 0,
+                        saves: 0,
+                        bonus: 0,
+                        clearances_blocks_interceptions: 0,
+                        recoveries: 0,
+                        tackles: 0,
+                        defensive_contribution: 0,
+                        starts: 0
+                    };
+                    map.set(key, entry);
+                }
+
+                const m = sp.multiplier;
+
+                entry.starts++;
+                entry.element_type = player?.element_type ?? 0;
+                entry.total_points += (gwStats as any).total_points * m; 
+                entry.goals_scored += gwStats.goals_scored * m;
+                entry.assists += gwStats.assists * m;
+                entry.clean_sheets += gwStats.clean_sheets * m;
+                entry.goals_conceded += gwStats.goals_conceded * m;
+                entry.own_goals += gwStats.own_goals * m;
+                entry.penalties_saved += gwStats.penalties_saved * m;
+                entry.penalties_missed += gwStats.penalties_missed * m;
+                entry.yellow_cards += gwStats.yellow_cards;
+                entry.red_cards += gwStats.red_cards;
+                entry.saves += gwStats.saves * m;
+                entry.bonus += gwStats.bonus * m;
+                entry.clearances_blocks_interceptions += gwStats.clearances_blocks_interceptions * m;
+                entry.recoveries += gwStats.recoveries * m;
+                entry.tackles += gwStats.tackles * m;
+                entry.defensive_contribution += (entry.element_type == 2 ? (gwStats.defensive_contribution >= 12 ? 1 : 0) : (gwStats.defensive_contribution >= 10 ? 1 : 0)) * m;
+                
+            }
+
+        }
+        
+
+        for (const e of map.values()) {
+            e.points_per_game = (e.total_points / Math.max(1, e.starts));
+        }
+
+        this.playerContributions = Array.from(map.values());
+        console.log(map);
+
+        this.getContributionsByClub();
     }
 }
 
@@ -265,6 +386,7 @@ export interface PlayerOwnership {
 export interface PlayerContribution { // stats for a player based on their contributions to a particular fpl team
     element: number
     element_type: number
+    team: number // Club they play for
     fplTeamId: number
     fplTeamName: string
     points_per_game: number

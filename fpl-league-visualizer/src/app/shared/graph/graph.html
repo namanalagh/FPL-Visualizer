@@ -15,6 +15,7 @@
         <option value="assists">Assists</option>
         <option value="cleanSheets">Clean Sheets</option>
         <option value="saves">Saves</option>
+        <option *ngIf="!isLeague" value="pointsByClub">Points by Club</option>
       </select>
     </label>
     <div class="chart-params-projections">
@@ -29,7 +30,7 @@
       <label class="stat-label" *ngIf="showProjectionsBox && projections">
         <select
           [(ngModel)]="selectedProjectionStat"
-          (change)="renderChart(chartStartGw, chartEndGw)"
+          (change)="renderLineChart(chartStartGw, chartEndGw)"
         >
           <option value="pointsPerGw">Points per GW</option>
           <option value="teamForm">Team Form</option>
@@ -68,6 +69,6 @@
   </div>
 </div>
 
-<div class="chart-wrapper">
+<div class="chart-wrapper" [class.pie-mode]="selectedStat === 'pointsByClub'">
   <canvas #leagueChart></canvas>
 </div>
