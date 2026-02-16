@@ -231,6 +231,35 @@ export class Team{
             starts: 0,
         })
     );
+    contributionsByPosition: PlayerContribution[] = Array.from(
+        { length: 4 },
+        () => ({
+            element: 0,
+            element_type: 0,
+            team: 0,
+            fplTeamId: 0,
+            fplTeamName: "0",
+            points_per_game: 0,
+            total_points: 0,
+            web_name: "",
+            goals_scored: 0,
+            assists: 0,
+            clean_sheets: 0,
+            goals_conceded: 0,
+            own_goals: 0,
+            penalties_saved: 0,
+            penalties_missed: 0,
+            yellow_cards: 0,
+            red_cards: 0,
+            saves: 0,
+            bonus: 0,
+            clearances_blocks_interceptions: 0,
+            recoveries: 0,
+            tackles: 0,
+            defensive_contribution: 0,
+            starts: 0,
+        })
+    );
 
     constructor() {
         this.squad_by_gw = Array.from({length: 39}, (_,i) => {
@@ -242,12 +271,17 @@ export class Team{
 
     getContributionsByClub(){
         this.playerContributions.forEach(player => {
-            console.log(player.team, "=>", player.total_points);
             this.contributionsByClub[player.team-1].total_points += (player.total_points);
-            
         })
-        console.log(this.contributionsByClub.map(t=> t.total_points));
     }
+    getContributionsByPosition(){
+        this.playerContributions.forEach(player => {
+            console.log(player.element_type, "=>", player.total_points);
+            this.contributionsByPosition[player.element_type-1].total_points += (player.total_points);
+        })
+        console.log(this.contributionsByPosition.map(t=> t.total_points));
+    }
+
 
     getPlayerContributions(
         fromGw: number = 0,
@@ -337,6 +371,7 @@ export class Team{
         console.log(map);
 
         this.getContributionsByClub();
+        this.getContributionsByPosition();
     }
 }
 

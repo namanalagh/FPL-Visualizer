@@ -4,6 +4,9 @@
 [isLeague]="false"
 [title]="entry?.entry_name ?? 'FPL Stats Visualizer'"
 ></app-tab-bar>
+<div class="loading-overlay" *ngIf="loading">
+  Loading entry...
+</div>
 <div class="site-info" *ngIf="!entry">
   <h4>To find your Entry ID, view your team at <a
       href="https://fantasy.premierleague.com/"
@@ -58,7 +61,7 @@
       'negative': (transfer.in_player.total_points - transfer.out_player.total_points) < 0
     }"
   >
-    {{ transfer.in_player.total_points - transfer.out_player.total_points }}
+    {{ transfer.in_player.total_points - transfer.out_player.total_points > 0 ? '+' : ''}}{{ transfer.in_player.total_points - transfer.out_player.total_points }}
   </td>
   </tr>
 </table>

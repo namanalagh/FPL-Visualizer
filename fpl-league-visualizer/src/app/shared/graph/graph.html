@@ -16,6 +16,7 @@
         <option value="cleanSheets">Clean Sheets</option>
         <option value="saves">Saves</option>
         <option *ngIf="!isLeague" value="pointsByClub">Points by Club</option>
+        <option *ngIf="!isLeague" value="pointsByPos">Points by Position</option>
       </select>
     </label>
     <div class="chart-params-projections">
@@ -69,6 +70,6 @@
   </div>
 </div>
 
-<div class="chart-wrapper" [class.pie-mode]="selectedStat === 'pointsByClub'">
+<div class="chart-wrapper" [class.pie-mode]="selectedStat === 'pointsByClub' || selectedStat === 'pointsByPos'">
   <canvas #leagueChart></canvas>
 </div>

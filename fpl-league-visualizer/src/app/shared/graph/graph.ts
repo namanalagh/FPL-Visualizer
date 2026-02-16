@@ -132,7 +132,7 @@ export class Graph {
   }
 
   renderChart(fromGw: number = this.chartStartGw, uptoGw: number = this.chartEndGw){
-    if(this.selectedStat != 'pointsByClub'){
+    if(this.selectedStat != 'pointsByClub' && this.selectedStat != 'pointsByPos'){
       this.renderLineChart(fromGw, uptoGw);
     }
     else {
@@ -252,13 +252,13 @@ export class Graph {
     if (!this.leagueChart) return;
     
 
-    const labels = [
+    const teamLabels = [
       "Arsenal",
       "Aston Villa",
+      "Burnley",
       "Bournemouth",
       "Brentford",
       "Brighton",
-      "Burnley",
       "Chelsea",
       "Crystal Palace",
       "Everton",
@@ -275,13 +275,17 @@ export class Graph {
       "Wolves"
     ]
     
+    const posLabels = [
+      "Goalkeepers", "Defenders", "Midfielders", "Strikers"
+    ]
+
     const clubGradientColors: { primary: string; secondary?: string }[] = [
       { primary: "#EF0107", secondary: "#FFFFFF" }, // Arsenal
       { primary: "#670E36", secondary: "#95BFE5" }, // Aston Villa
+      { primary: "#6C1D45", secondary: "#99D6EA" }, // Burnley
       { primary: "#DA291C", secondary: "#000000" }, // Bournemouth
       { primary: "#E30613", secondary: "#FFFFFF" }, // Brentford
       { primary: "#0057B8", secondary: "#FFFFFF" }, // Brighton
-      { primary: "#6C1D45", secondary: "#99D6EA" }, // Burnley
       { primary: "#034694" }, // Chelsea
       { primary: "#1B458F", secondary: "#C4122E" }, // Crystal Palace
       { primary: "#003399" }, // Everton
@@ -317,12 +321,9 @@ export class Graph {
       {
         data: this.getPieChartData(this.teams[0]),
         // backgroundColor: gradients,
-        borderColor: clubGradientColors.map(c =>
-          c.secondary || c.primary
-        ),
+        borderColor: this.selectedStat == 'pointsByClub' ? clubGradientColors.map(c => c.secondary || c.primary) : undefined,
         borderWidth: 2,
-        // hoverOffset: 8
-        backgroundColor: clubGradientColors.map(c => c.primary)
+        backgroundColor: this.selectedStat === 'pointsByClub' ? clubGradientColors.map(c => c.primary) : undefined,
       }
     ]
     console.log(this.getPieChartData(this.teams[0]));
@@ -335,7 +336,7 @@ export class Graph {
       this.chart = new Chart(this.leagueChart.nativeElement, {
         type: 'pie',
         data: {
-          labels: labels,
+          labels: this.selectedStat == 'pointsByClub' ? teamLabels : posLabels,
           datasets: datasets
         },
         options: {
@@ -411,6 +412,10 @@ export class Graph {
         this.showProjectionsBox = false;
         this.showCumulative = false;
         return team.contributionsByClub.map(team => team.total_points);
+      case 'pointsByPos':
+        this.showProjectionsBox = false;
+        this.showCumulative = false;
+        return team.contributionsByPosition.map(team => team.total_points);
       default:
         return [];
     }
@@ -461,6 +466,7 @@ export type StatOption =
   | 'cleanSheets'
   | 'saves'
   | 'pointsByClub'
+  | 'pointsByPos'
   ;
 
 export type ProjectionStatOption = 

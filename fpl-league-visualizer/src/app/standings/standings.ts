@@ -153,7 +153,6 @@ export class Standings {
           this.loading = false;
           this.cdr.detectChanges();
         }
-      
       });
   }
 

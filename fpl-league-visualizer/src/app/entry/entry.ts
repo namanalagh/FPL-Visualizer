@@ -21,6 +21,7 @@ export class Entry {
   entryIdInput!: number;
   staticData!: StaticDataDto
   currentGw!: EventsDto
+  loading = false;
   
   constructor(
     private standingsService: StandingsService, 
@@ -30,6 +31,7 @@ export class Entry {
     private cdr: ChangeDetectorRef) {}
 
   fetchEntry(userId: number){
+    this.loading = true;
     this.standingsService.getLeagueEntry(userId).pipe(
       map(
         dto => {
@@ -59,6 +61,7 @@ export class Entry {
     .subscribe(team => {
       this.entry.getPlayerContributions(0, this.currentGw.id, (id, gw) => this.playersService.getPlayerGwStats(id, gw), id => this.playersService.getPlayerInfo(id));
       console.log(this.entry, "Team with picks attached");
+      this.loading = false;
       this.cdr.detectChanges();
     })
   }
