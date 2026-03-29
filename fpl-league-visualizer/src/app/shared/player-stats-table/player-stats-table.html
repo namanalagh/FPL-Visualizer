@@ -1,0 +1,36 @@
+<div class="player-table-wrapper" *ngIf="this.standings">
+     <label class="stat-label">
+      <select
+        [(ngModel)]="selectedStat"
+      >
+        <option value="ownership">Ownership</option>
+        <option value="points">Points Scored</option>
+        <option value="returns">Points/GW</option>
+        <option value="goals">Goals Scored</option>
+        <option value="assists">Assists</option>
+        <option value="defcons">Defcons</option>
+        <option value="cleanSheets">Clean Sheets</option>
+        <option value="saves">Saves</option>
+      </select>
+    </label>
+    <div class="player-table-bg">
+      <table class="player-table">
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th *ngIf="selectedStat != 'ownership'">Team</th>
+            <th>{{ this.selectedStatLabel }}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+          <tr *ngFor="let p of getStatValue()">
+            <td>{{ p.web_name }}</td>
+            <td *ngIf="selectedStat != 'ownership'">{{ p.fpl_team_name }}</td>
+            <td>{{ p.stat_value | number:'1.0-1' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

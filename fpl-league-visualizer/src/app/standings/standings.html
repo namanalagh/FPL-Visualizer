@@ -88,6 +88,15 @@
 
 <div class="section-separator" *ngIf="standings"></div>
 
+<div>
+  <app-player-stats-table
+  [standings]="this.standings"></app-player-stats-table>
+</div>
+
+
+<!-- <div>
+<div class="section-separator" *ngIf="standings"></div>
+
 <div class="mini-table-section" *ngIf="standings">
 
 
@@ -104,8 +113,8 @@
 
         <tbody>
           <tr *ngFor="let p of standings.top10Owned">
-            <td>{{ p.player_details?.web_name }}</td>
-            <td>{{ p.percent | number:'1.0-0' }}</td>
+            <td>{{ p.web_name }}</td>
+            <td>{{ p.stat_value | number:'1.0-0' }}</td>
           </tr>
         </tbody>
       </table>
@@ -128,8 +137,8 @@
         <tbody>
           <tr *ngFor="let p of standings.topPointScorers">
             <td>{{ p.web_name }}</td>
-            <td>{{ p.fplTeamName }}</td>
-            <td>{{ p.total_points }}</td>
+            <td>{{ p.fpl_team_name }}</td>
+            <td>{{ p.stat_value }}</td>
           </tr>
         </tbody>
       </table>
@@ -151,8 +160,8 @@
         <tbody>
           <tr *ngFor="let p of standings.topGoalScorers">
             <td>{{ p.web_name }}</td>
-            <td>{{ p.fplTeamName }}</td>
-            <td>{{ p.goals_scored }}</td>
+            <td>{{ p.fpl_team_name }}</td>
+            <td>{{ p.stat_value }}</td>
           </tr>
         </tbody>
       </table>
@@ -182,8 +191,8 @@
         <tbody>
           <tr *ngFor="let p of standings.topCleanSheets">
             <td>{{ p.web_name }}</td>
-            <td>{{ p.fplTeamName }}</td>
-            <td>{{ p.clean_sheets }}</td>
+            <td>{{ p.fpl_team_name }}</td>
+            <td>{{ p.stat_value }}</td>
           </tr>
         </tbody>
       </table>
@@ -205,8 +214,8 @@
         <tbody>
           <tr *ngFor="let p of standings.topSaves">
             <td>{{ p.web_name }}</td>
-            <td>{{ p.fplTeamName }}</td>
-            <td>{{ p.saves }}</td>
+            <td>{{ p.fpl_team_name }}</td>
+            <td>{{ p.stat_value }}</td>
           </tr>
         </tbody>
       </table>
@@ -231,8 +240,8 @@
         <tbody>
           <tr *ngFor="let p of standings.topPointsPerGw">
             <td>{{ p.web_name }}</td>
-            <td>{{ p.fplTeamName }}</td>
-            <td>{{ p.points_per_game | number:`1.0-1`}}</td>
+            <td>{{ p.fpl_team_name }}</td>
+            <td>{{ p.stat_value | number:`1.0-1`}}</td>
           </tr>
         </tbody>
       </table>
@@ -260,8 +269,8 @@
         <tbody>
           <tr *ngFor="let p of standings.topDefcons">
             <td>{{ p.web_name }}</td>
-            <td>{{ p.fplTeamName }}</td>
-            <td>{{ p.defensive_contribution }}</td>
+            <td>{{ p.fpl_team_name }}</td>
+            <td>{{ p.stat_value }}</td>
           </tr>
         </tbody>
       </table>
@@ -271,3 +280,4 @@
 </div>
 
 <div class="section-separator" *ngIf="standings"></div>
+</div> -->

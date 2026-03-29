@@ -7,16 +7,16 @@ export class StandingsVM{
     leagueName = '';
     teams: Team[] = [];
     currentGw: number = 1;
-    top10Owned: PlayerOwnership[] = [];
+    top10Owned: PlayerStatContribution[] = [];
     
-    topPointScorers: PlayerContribution[] = [];
-    topGoalScorers: PlayerContribution[] = [];
-    topAssistProviders: PlayerContribution[] = [];
-    topCleanSheets: PlayerContribution[] = [];
-    topDefcons: PlayerContribution[] = [];
-    topSaves: PlayerContribution[] = [];
-    topStarts: PlayerContribution[] = [];
-    topPointsPerGw: PlayerContribution[] = [];
+    topPointScorers: PlayerStatContribution[] = [];
+    topGoalScorers: PlayerStatContribution[] = [];
+    topAssistProviders: PlayerStatContribution[] = [];
+    topCleanSheets: PlayerStatContribution[] = [];
+    topDefcons: PlayerStatContribution[] = [];
+    topSaves: PlayerStatContribution[] = [];
+    topStarts: PlayerStatContribution[] = [];
+    topPointsPerGw: PlayerStatContribution[] = [];
 
     get allSquads(): Squad[] {
         return this.teams.flatMap(t => t.squad_by_gw);
@@ -56,7 +56,7 @@ export class StandingsVM{
             }
         }
 
-        this.top10Owned = Array.from(counts.entries())
+        let temp = Array.from(counts.entries())
             .map(([element, count]) => ({
                 element,
                 count,
@@ -65,6 +65,13 @@ export class StandingsVM{
             }))
             .sort((a, b) => b.count - a.count)
             .slice(0, 10);
+
+
+        this.top10Owned = temp.map (player => ({
+            web_name: player.player_details?.web_name || "undefined",
+            fpl_team_name: "undefined",
+            stat_value: player.percent || 0
+        }))
     }
 
     getPlayerContributions(
@@ -97,8 +104,8 @@ export class StandingsVM{
                             element: sp.element,
                             element_type: 0,
                             team: player?.team ?? 0,
-                            fplTeamId: team.id,
-                            fplTeamName: team.entry_name,
+                            fpl_team_id: team.id,
+                            fpl_team_name: team.entry_name,
                             web_name: player?.web_name ?? 'Unknown',
                             total_points: 0,
                             points_per_game: 0,
@@ -155,38 +162,71 @@ export class StandingsVM{
         const all = Array.from(map.values());
 
         this.topPointScorers = [...all]
-        .sort((a,b) => b.total_points - a.total_points)
-        .slice(0,10);
+            .sort((a, b) => b.total_points - a.total_points)
+            .slice(0, 10)
+            .map(player => ({
+                web_name: player.web_name,
+                fpl_team_name: player.fpl_team_name,
+                stat_value: player.total_points
+            }));
 
         this.topGoalScorers = [...all]
         .sort((a,b) => b.goals_scored - a.goals_scored)
-        .slice(0,10);
+        .slice(0,10).map(player => ({
+                web_name: player.web_name,
+                fpl_team_name: player.fpl_team_name,
+                stat_value: player.goals_scored
+            }));
 
         this.topAssistProviders = [...all]
         .sort((a,b) => b.assists - a.assists)
-        .slice(0,10); 
+        .slice(0,10).map(player => ({
+                web_name: player.web_name,
+                fpl_team_name: player.fpl_team_name,
+                stat_value: player.assists
+            })); 
 
         this.topDefcons = [...all]
         .sort((a,b) => b.defensive_contribution - a.defensive_contribution)
-        .slice(0,10); 
+        .slice(0,10).map(player => ({
+                web_name: player.web_name,
+                fpl_team_name: player.fpl_team_name,
+                stat_value: player.defensive_contribution
+            })); 
 
         this.topCleanSheets = [...all]
         .filter(a => a.element_type < 3)
         .sort((a,b) => b.clean_sheets - a.clean_sheets)
-        .slice(0,10); 
+        .slice(0,10).map(player => ({
+                web_name: player.web_name,
+                fpl_team_name: player.fpl_team_name,
+                stat_value: player.clean_sheets
+            })); 
 
         this.topSaves = [...all]
         .sort((a,b) => b.saves - a.saves)
-        .slice(0,10);
+        .slice(0,10).map(player => ({
+                web_name: player.web_name,
+                fpl_team_name: player.fpl_team_name,
+                stat_value: player.saves
+            }));
         
         this.topStarts = [...all]
         .sort((a,b) => b.starts - a.starts)
-        .slice(0,10);
+        .slice(0,10).map(player => ({
+                web_name: player.web_name,
+                fpl_team_name: player.fpl_team_name,
+                stat_value: player.starts
+            }));
 
         this.topPointsPerGw = [...all]
         .sort((a,b) => b.points_per_game - a.points_per_game)
         .filter(a => a.starts > 9)
-        .slice(0,10);
+        .slice(0,10).map(player => ({
+                web_name: player.web_name,
+                fpl_team_name: player.fpl_team_name,
+                stat_value: player.points_per_game
+            }));
     }
 }
 
@@ -208,8 +248,8 @@ export class Team{
             element: 0,
             element_type: 0,
             team: 0,
-            fplTeamId: 0,
-            fplTeamName: "0",
+            fpl_team_id: 0,
+            fpl_team_name: "0",
             points_per_game: 0,
             total_points: 0,
             web_name: "",
@@ -237,8 +277,8 @@ export class Team{
             element: 0,
             element_type: 0,
             team: 0,
-            fplTeamId: 0,
-            fplTeamName: "0",
+            fpl_team_id: 0,
+            fpl_team_name: "0",
             points_per_game: 0,
             total_points: 0,
             web_name: "",
@@ -312,8 +352,8 @@ export class Team{
                         element: sp.element,
                         element_type: 0,
                         team: player?.team ?? 0,
-                        fplTeamId: this.id,
-                        fplTeamName: this.entry_name,
+                        fpl_team_id: this.id,
+                        fpl_team_name: this.entry_name,
                         web_name: player?.web_name ?? 'Unknown',
                         total_points: 0,
                         points_per_game: 0,
@@ -356,7 +396,7 @@ export class Team{
                 entry.clearances_blocks_interceptions += gwStats.clearances_blocks_interceptions * m;
                 entry.recoveries += gwStats.recoveries * m;
                 entry.tackles += gwStats.tackles * m;
-                entry.defensive_contribution += (entry.element_type == 2 ? (gwStats.defensive_contribution >= 12 ? 1 : 0) : (gwStats.defensive_contribution >= 10 ? 1 : 0)) * m;
+                entry.defensive_contribution += (entry.element_type == 2 ? (gwStats.defensive_contribution >= 10 ? 1 : 0) : (gwStats.defensive_contribution >= 12 ? 1 : 0)) * m;
                 
             }
 
@@ -422,8 +462,8 @@ export interface PlayerContribution { // stats for a player based on their contr
     element: number
     element_type: number
     team: number // Club they play for
-    fplTeamId: number
-    fplTeamName: string
+    fpl_team_id: number
+    fpl_team_name: string
     points_per_game: number
     total_points: number
     web_name: string
@@ -443,4 +483,10 @@ export interface PlayerContribution { // stats for a player based on their contr
     tackles: number
     defensive_contribution: number
     starts: number
+}
+
+export interface PlayerStatContribution {
+    web_name: string
+    fpl_team_name: string
+    stat_value: number
 }

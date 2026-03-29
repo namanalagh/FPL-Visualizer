@@ -13,10 +13,11 @@ import { finalize } from 'rxjs';
 import { ChipType } from './standingsDTO';
 import { Graph } from "../shared/graph/graph";
 import { TabBar } from '../shared/tab-bar/tab-bar';
+import { PlayerStatsTable } from '../shared/player-stats-table/player-stats-table';
 
 @Component({
   selector: 'app-standings',
-  imports: [CommonModule, FormsModule, Graph, TabBar],
+  imports: [CommonModule, FormsModule, Graph, TabBar, PlayerStatsTable],
   standalone: true,
   templateUrl: './standings.html',
   styleUrl: './standings.css',

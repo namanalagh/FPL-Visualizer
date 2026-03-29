@@ -1,0 +1,65 @@
+.stat-label select{
+    font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    appearance: none;       
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    justify-content: center;
+    line-height: 1;      
+
+    padding: 6px 12px;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+
+  
+    background-color: var(--pl-purple);  
+    color: white;
+
+    cursor: pointer;
+}
+
+.stat-label select option {
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: white;
+  color: black;
+}
+
+.player-table{
+    color: white;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+}
+
+.player-table td {
+    text-align: center;
+    font-size: large;
+    background: rgb(25, 24, 24);
+    width: 33%;
+    padding: 12px;
+}
+
+.player-table-header{
+    
+}
+.player-table-bg{
+    
+}
+
+@media (max-width: 768px) {
+    .player-table td{
+        font-size: small;
+    }
+
+    .stat-label {
+        font-size: 10px !important;
+        line-height: 1.2;
+        font-weight: 500;
+        padding-left: 8px !important;
+    }
+
+    select {
+        font-size: 10px !important;
+        height: 28px;
+    }
+}
