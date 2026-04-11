@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { StandingsService } from '../standings-service';
-import { Team } from '../standings/standingsVM';
+import { Team, Transfer } from '../standings/standingsVM';
 import { map, pipe, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Graph } from '../shared/graph/graph';
@@ -22,6 +22,7 @@ export class Entry {
   staticData!: StaticDataDto
   currentGw!: EventsDto
   loading = false;
+  groupedTransfers: any[] = []
   
   constructor(
     private standingsService: StandingsService, 
@@ -54,6 +55,28 @@ export class Entry {
         this.standingsService.getEntryTransfers(this.entry.id, this.currentGw.id).pipe(
           map(transfers => {
             this.entry.transfers = transfers;
+            
+            const grouped = transfers.reduce<Record<number, Transfer[]>>((acc, transfer) => {
+              if(!acc[transfer.gw]){
+                acc[transfer.gw] = [];
+              }
+            
+              acc[transfer.gw].push(transfer);
+              
+              return acc;
+            }, {})
+
+            this.groupedTransfers = Object.keys(grouped).map(gw => ({
+              gw: +gw,
+              transfers: grouped[+gw],
+              expanded: false,
+              totalImpact: grouped[+gw].reduce((sum, t) =>
+                sum + (t.in_player.total_points - t.out_player.total_points), 0
+              ),
+              moneySpent: grouped[+gw].reduce((sum, t) =>
+                sum + ((t.out_cost/10) - (t.in_cost/10)), 0
+              ),
+            })).reverse()
           })
         )
       )
